@@ -1,0 +1,9 @@
+{
+  "service": "serverless-service-name",
+  "stage": "/the-slash-is-important-because-you-can-have-an-empty-string-locally",
+  "bucket": "your-bucket-name",
+  "profile": "your-aws-profile",
+  "username": "standard",
+  "password": "something-secretive",
+  "overwrite": false
+}

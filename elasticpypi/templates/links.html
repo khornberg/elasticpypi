@@ -1,0 +1,11 @@
+<html>
+  <head>
+  <title>Links for {{ package }}</title>
+  </head>
+  <body>
+    <h1>Links for {{ package }}</h1>
+    {% for package in packages %}
+    <a href="{{ package.0 }}">{{ package.1 }}</a></br>
+    {% endfor %}
+  </body>
+</html>

@@ -1,0 +1,68 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: ${file(elasticpypi/config.json):service} # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python2.7
+  profile: ${file(elasticpypi/config.json):profile}
+
+# you can overwrite defaults here
+ # stage: dev
+  region: us-west-2
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action: "s3:*"
+      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "bucket" } ] ]  }
+    - Effect: "Allow"
+      Action: "s3:*"
+      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "bucket" }, "/*" ] ]  }
+
+plugins:
+  - serverless-wsgi
+
+functions:
+  api:
+    handler: wsgi.handler
+    events:
+      - http:
+          path: simple
+          method: get
+          integration: lambda-proxy
+      - http:
+          path: simple
+          method: post
+          integration: lambda-proxy
+      - http:
+          path: simple/{name}
+          method: get
+          integration: lambda-proxy
+      - http:
+          path: packages/{name}
+          method: get
+          integration: lambda-proxy
+
+custom:
+  wsgi:
+    app: elasticpypi.api.app
+
+# you can add CloudFormation resource templates here
+resources:
+ Resources:
+   bucket:
+     Type: AWS::S3::Bucket
+     Properties:
+       BucketName: ${file(elasticpypi/config.json):bucket}

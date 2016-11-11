@@ -1,0 +1,10 @@
+<html>
+  <head>
+    <title>Simple Index</title>
+  </head>
+  <body>
+    {% for prefix in prefixes %}
+    <a href="{{ stage }}/simple/{{ prefix.0 }}/">{{ prefix.1 }}</a><br/>
+    {% endfor %}
+  </body>
+</html>

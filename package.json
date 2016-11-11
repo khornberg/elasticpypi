@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "serverless-wsgi": "^1.0.0"
+  }
+}
