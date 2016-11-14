@@ -15,8 +15,15 @@ def first_last_capitalize(s):
     return s[:1].upper() + s[1:-1] + s[-1:].upper()
 
 
+def underscores(prefix):
+    """
+    Bluntly replace dashes with underscores for those packages that use underscores
+    """
+    return prefix.replace('-', '_')
+
+
 def get_search_string(prefix):
-    return "Contents[?starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`)]".format(prefix.capitalize()[:3], prefix.upper()[:3], first_last_capitalize(prefix[:3]), prefix)  # noqa E501
+    return "Contents[?starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`)]".format(prefix.capitalize()[:3], prefix.upper()[:3], first_last_capitalize(prefix[:3]), underscores(prefix), prefix)  # noqa E501
 
 
 def list_packages(prefix='', full_key=False):
