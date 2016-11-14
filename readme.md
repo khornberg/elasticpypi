@@ -11,7 +11,7 @@ This is a limitation of AWS API Gateway. You will have to find other ways to upl
 
 **Cannot browse with a browser**
 
-This is a limitation of current browsers. They have removed basic authentication for remote urls.
+This is a limitation of current browsers. They have removed basic authentication for remote urls via the url (e.g. x:y@z). `WWW-Authenticate` responses do not work with AWS Lambda.
 
 # Setup
 
