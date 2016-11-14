@@ -11,8 +11,8 @@ def get_key(key, full_key):
     return name.compute_package_name(key)
 
 
-def first_last_capitalize(s):
-    return s[:1].upper() + s[1:-1] + s[-1:].upper()
+def first_last_capitalize(prefix):
+    return prefix[:1].upper() + prefix[1:-1] + prefix[-1:].upper()
 
 
 def underscores(prefix):
