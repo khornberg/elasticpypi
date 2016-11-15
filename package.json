@@ -1,5 +1,31 @@
 {
   "dependencies": {
+    "serverless": "^1.1.0",
     "serverless-wsgi": "^1.0.0"
-  }
+  },
+  "name": "elasticpypi",
+  "description": "elastic pypi",
+  "version": "0.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khornberg/elasticpypi.git"
+  },
+  "keywords": [
+    "pypi",
+    "serverless"
+  ],
+  "author": "Kyle Hornberg",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/khornberg/elasticpypi/issues"
+  },
+  "homepage": "https://github.com/khornberg/elasticpypi#readme"
 }
