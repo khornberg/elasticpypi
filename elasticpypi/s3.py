@@ -65,7 +65,6 @@ def get_packages_by_jmespath(paginator, prefix, full_key):
         key = page['Key']
         name = get_key(key, full_key)
         if full_key:
-            print('jmes', name)
             packages.add((signed_url(name), name))
         else:
             packages.add((name, name))
