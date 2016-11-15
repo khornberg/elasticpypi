@@ -22,23 +22,62 @@ def underscores(prefix):
     return prefix.replace('-', '_')
 
 
+def third_capitalize(prefix):
+    return prefix[:-1] + prefix[-1:].upper()
+
+
 def get_search_string(prefix):
-    return "Contents[?starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`) || starts_with(Key, `{}`)]".format(prefix.capitalize()[:3], prefix.upper()[:3], first_last_capitalize(prefix[:3]), underscores(prefix), prefix)  # noqa E501
+    return "Contents[?{}]".format(get_permutations(prefix))
 
 
-def list_packages(prefix='', full_key=False):
-    client = boto3.client('s3')
+def get_permutations(prefix):
+    pre = prefix[:3]
+    return " || ".join(
+        (
+            "starts_with(Key, `{}`)".format(x)
+            for x in
+            [pre.capitalize(), pre.upper(), first_last_capitalize(pre), underscores(prefix), third_capitalize(pre)]
+        )
+    )
+
+
+def get_packages_by_prefix(paginator, prefix, full_key):
     packages = set()
-    paginator = client.get_paginator('list_objects_v2')
+    page_iterator = paginator.paginate(Bucket=BUCKET, Prefix=prefix)
+    for page in page_iterator:
+        if 'Contents' in page:
+            for key in page['Contents']:
+                key = key['Key']
+                name = get_key(key, full_key)
+                if full_key:
+                    if get_key(key, False) == prefix:
+                        packages.add((signed_url(name), name))
+                else:
+                    packages.add((name, name))
+    return packages
+
+
+def get_packages_by_jmespath(paginator, prefix, full_key):
+    packages = set()
     page_iterator = paginator.paginate(Bucket=BUCKET)
     filtered_iterator = page_iterator.search(get_search_string(prefix))
     for page in filtered_iterator:
         key = page['Key']
         name = get_key(key, full_key)
         if full_key:
+            print('jmes', name)
             packages.add((signed_url(name), name))
         else:
             packages.add((name, name))
+    return packages
+
+
+def list_packages(prefix='', full_key=False):
+    client = boto3.client('s3')
+    paginator = client.get_paginator('list_objects_v2')
+    packages = get_packages_by_prefix(paginator, prefix, full_key)
+    if not len(packages):
+        packages = get_packages_by_jmespath(paginator, prefix, full_key)
     return sorted(packages)
 
 
