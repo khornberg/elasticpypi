@@ -98,5 +98,5 @@ def upload(filename, payload):
 
 def signed_url(filename):
     client = boto3.client('s3')
-    url = client.generate_presigned_url('get_object', Params={'Bucket': BUCKET, 'Key': filename}, ExpiresIn=5)
+    url = client.generate_presigned_url('get_object', Params={'Bucket': BUCKET, 'Key': filename}, ExpiresIn=15)
     return url
