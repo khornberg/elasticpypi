@@ -23,6 +23,7 @@ def list_packages_by_name(dynamodb, package_name):
         IndexName='normalized_name-index',
         KeyConditionExpression=Key('normalized_name').eq(_name),
         ProjectionExpression='filename',
+        ScanIndexForward=False,
     )
     packages = [(s3.signed_url(package['filename']), package['filename']) for package in dynamodb_packages['Items']]
     return packages
