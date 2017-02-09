@@ -7,6 +7,7 @@ from elasticpypi.config import config
 from tests import fixtures
 import boto3
 from moto import mock_dynamodb2
+from tests import mock_dynamodb_table
 
 TABLE = config['table']
 
@@ -32,8 +33,18 @@ class SimpleTests(TestCase):
 
     @mock_dynamodb2
     def test_get_simple_200_from_dynamodb(self):
-        table = self.make_table()
-        self.add_items(table)
+        mock_dynamodb_table.make_table(items=[
+            {
+                'package_name': 'z',
+                'version': '0'
+            }, {
+                'package_name': 'y',
+                'version': '0'
+            }, {
+                'package_name': 'x',
+                'version': '0'
+            }
+        ])
         response = self.client.get('/simple/', headers=self.headers)
         self.assert200(response)
         self.assertEqual(response.data, fixtures.simple_html)
@@ -66,49 +77,3 @@ class SimpleTests(TestCase):
         list_packages.assert_called_with('py-0.1.2.tar.gz', True)
         assert not upload.called
         f.close()
-
-    def make_table(self):
-        dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.create_table(
-            TableName=TABLE,
-            KeySchema=[
-                {
-                    'AttributeName': 'package_name',
-                    'KeyType': 'HASH'  # Partition key
-                },
-                {
-                    'AttributeName': 'version',
-                    'KeyType': 'RANGE'  # Sort key
-                }
-            ],
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'package_name',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'version',
-                    'AttributeType': 'S'
-                },
-            ],
-            ProvisionedThroughput={'ReadCapacityUnits': 1,
-                                   'WriteCapacityUnits': 1}
-        )
-        return table
-
-    def add_items(self, table, items=None):
-        default_items = [
-            {
-                'package_name': 'z',
-                'version': '0'
-            }, {
-                'package_name': 'y',
-                'version': '0'
-            }, {
-                'package_name': 'x',
-                'version': '0'
-            }
-        ]
-        _items = items if items else default_items
-        for item in _items:
-            table.put_item(Item=item)

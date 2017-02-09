@@ -1,11 +1,11 @@
 import re
-import boto3
 from flask_testing import TestCase
 from base64 import b64encode
 from elasticpypi.api import app
 from elasticpypi.config import config
 from tests import fixtures
 from moto import mock_dynamodb2
+from tests import mock_dynamodb_table
 
 TABLE = config['table']
 
@@ -27,44 +27,7 @@ class ElasticPypiTests(TestCase):
 
     @mock_dynamodb2
     def test_get_simple_x_200_from_dynamodb(self):
-        table = self.make_table()
-        self.add_items(table)
-        response = self.client.get('/simple/x/', headers=self.headers)
-        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data)  # Remove signed url since it changes
-        self.assert200(response)
-        self.assertEqual(html, fixtures.links_html)
-
-    def make_table(self):
-        dynamodb = boto3.resource('dynamodb')
-        table = dynamodb.create_table(
-            TableName=TABLE,
-            KeySchema=[
-                {
-                    'AttributeName': 'package_name',
-                    'KeyType': 'HASH'  # Partition key
-                },
-                {
-                    'AttributeName': 'version',
-                    'KeyType': 'RANGE'  # Sort key
-                }
-            ],
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'package_name',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'version',
-                    'AttributeType': 'S'
-                },
-            ],
-            ProvisionedThroughput={'ReadCapacityUnits': 1,
-                                   'WriteCapacityUnits': 1}
-        )
-        return table
-
-    def add_items(self, table, items=None):
-        default_items = [
+        mock_dynamodb_table.make_table([
             {
                 'package_name': 'z',
                 'version': '0',
@@ -82,7 +45,8 @@ class ElasticPypiTests(TestCase):
                 'version': '1',
                 'filename': 'x-1.tar.gz'
             }
-        ]
-        _items = items if items else default_items
-        for item in _items:
-            table.put_item(Item=item)
+        ])
+        response = self.client.get('/simple/x/', headers=self.headers)
+        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data)  # Remove signed url since it changes
+        self.assert200(response)
+        self.assertEqual(html, fixtures.links_html)

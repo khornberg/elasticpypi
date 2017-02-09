@@ -1,10 +1,8 @@
 from unittest import TestCase
-from elasticpypi.config import config
 from elasticpypi.dynamodb import list_packages_by_name
-import boto3
 from moto import mock_dynamodb2
-
-TABLE = config['table']
+from tests import mock_dynamodb_table
+import boto3
 
 
 @mock_dynamodb2
@@ -12,8 +10,7 @@ class ElasticPypiDynamodbTests(TestCase):
 
     def setUp(self):
         self.dynamodb = boto3.resource('dynamodb', region_name='artic-1')
-        self.table = self.make_table()
-        self.add_items(self.table)
+        self.table = mock_dynamodb_table.make_table()
 
     def tearDown(self):
         self.table.delete()
@@ -55,64 +52,3 @@ class ElasticPypiDynamodbTests(TestCase):
         self.assertEqual('x-y-z-0.tar.gz', package_name)
         self.assertIn('s3.amazonaws.com/x.y.z-1.tar.gz', signed_url1)
         self.assertEqual('x.y.z-1.tar.gz', package_name1)
-
-    def make_table(self):
-        # dynamodb = boto3.resource('dynamodb')
-        table = self.dynamodb.create_table(
-            TableName=TABLE,
-            KeySchema=[
-                {
-                    'AttributeName': 'package_name',
-                    'KeyType': 'HASH'  # Partition key
-                },
-                {
-                    'AttributeName': 'version',
-                    'KeyType': 'RANGE'  # Sort key
-                }
-            ],
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'package_name',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'version',
-                    'AttributeType': 'S'
-                },
-            ],
-            ProvisionedThroughput={'ReadCapacityUnits': 1,
-                                   'WriteCapacityUnits': 1}
-        )
-        return table
-
-    def add_items(self, table, items=None):
-        default_items = [
-            {
-                'package_name': 'z',
-                'version': '0',
-                'filename': 'z-0.tar.gz'
-            }, {
-                'package_name': 'y',
-                'version': '0',
-                'filename': 'y-0.tar.gz'
-            }, {
-                'package_name': 'x',
-                'version': '0',
-                'filename': 'x-0.tar.gz'
-            }, {
-                'package_name': 'x-y-z',
-                'version': '0',
-                'filename': 'x-y-z-0.tar.gz'
-            }, {
-                'package_name': 'x-y-z',
-                'version': '1',
-                'filename': 'x.y.z-1.tar.gz'
-            }, {
-                'package_name': 'xy',
-                'version': '1',
-                'filename': 'Xy-1.tar.gz'
-            }
-        ]
-        _items = items if items else default_items
-        for item in _items:
-            table.put_item(Item=item)
