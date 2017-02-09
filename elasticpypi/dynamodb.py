@@ -20,7 +20,9 @@ def list_packages_by_name(dynamodb, package_name):
     _name = name.normalize(package_name)
     table = dynamodb.Table(TABLE)
     dynamodb_packages = table.query(
-        KeyConditionExpression=Key('package_name').eq(_name), ProjectionExpression='filename'
+        IndexName='normalized_name-index',
+        KeyConditionExpression=Key('normalized_name').eq(_name),
+        ProjectionExpression='filename',
     )
     packages = [(s3.signed_url(package['filename']), package['filename']) for package in dynamodb_packages['Items']]
     return packages

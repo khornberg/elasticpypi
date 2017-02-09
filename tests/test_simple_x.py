@@ -31,18 +31,22 @@ class ElasticPypiTests(TestCase):
             {
                 'package_name': 'z',
                 'version': '0',
+                'normalized_name': 'z',
                 'filename': 'x-0.tar.gz'
             }, {
                 'package_name': 'y',
                 'version': '0',
+                'normalized_name': 'y',
                 'filename': 'x-0.tar.gz'
             }, {
                 'package_name': 'x',
                 'version': '0',
+                'normalized_name': 'x',
                 'filename': 'x-0.tar.gz'
             }, {
                 'package_name': 'x',
                 'version': '1',
+                'normalized_name': 'x',
                 'filename': 'x-1.tar.gz'
             }
         ])
