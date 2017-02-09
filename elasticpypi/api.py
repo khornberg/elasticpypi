@@ -1,10 +1,11 @@
+import boto3
 from flask import Flask
 from flask import request
 from flask import send_file
 from flask import render_template
 from flask import abort
 from auth import requires_auth
-from elasticpypi import s3
+from elasticpypi import s3, dynamodb
 from elasticpypi.config import config
 
 app = Flask(__name__)
@@ -24,14 +25,16 @@ def simple():
             abort(409)
         s3.upload(f.filename, f.stream)
         return ""
-    prefixes = s3.list_packages()
+    db = boto3.resource('dynamodb')
+    prefixes = dynamodb.list_packages(db)
     return render_template('simple.html', prefixes=prefixes, stage=config['stage'])
 
 
 @app.route("/simple/<name>/")
 @requires_auth
 def simple_name(name):
-    packages = s3.list_packages(name, True)
+    db = boto3.resource('dynamodb')
+    packages = dynamodb.list_packages_by_name(db, name)
     return render_template('links.html', packages=packages, package=name, stage=config['stage'])
 
 

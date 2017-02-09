@@ -1,9 +1,13 @@
+import re
+import boto3
 from flask_testing import TestCase
 from base64 import b64encode
-import mock
 from elasticpypi.api import app
 from elasticpypi.config import config
 from tests import fixtures
+from moto import mock_dynamodb2
+
+TABLE = config['table']
 
 
 class ElasticPypiTests(TestCase):
@@ -21,11 +25,64 @@ class ElasticPypiTests(TestCase):
         response = self.client.get('/simple/x/')
         self.assert401(response)
 
-    @mock.patch('elasticpypi.s3.signed_url')
-    @mock.patch('elasticpypi.s3.list_packages')
-    def test_get_simple_x_200(self, list_packages, signed_url):
-        list_packages.return_value = [('https://xyz', 'x-0.3.3.tar.gz'), ('https://xyz', 'x-1.1.1.tar.gz')]
+    @mock_dynamodb2
+    def test_get_simple_x_200_from_dynamodb(self):
+        table = self.make_table()
+        self.add_items(table)
         response = self.client.get('/simple/x/', headers=self.headers)
+        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data)  # Remove signed url since it changes
         self.assert200(response)
-        self.assertEqual(response.data, fixtures.links_html)
-        list_packages.assert_called_with('x', True)
+        self.assertEqual(html, fixtures.links_html)
+
+    def make_table(self):
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.create_table(
+            TableName=TABLE,
+            KeySchema=[
+                {
+                    'AttributeName': 'package_name',
+                    'KeyType': 'HASH'  # Partition key
+                },
+                {
+                    'AttributeName': 'version',
+                    'KeyType': 'RANGE'  # Sort key
+                }
+            ],
+            AttributeDefinitions=[
+                {
+                    'AttributeName': 'package_name',
+                    'AttributeType': 'S'
+                },
+                {
+                    'AttributeName': 'version',
+                    'AttributeType': 'S'
+                },
+            ],
+            ProvisionedThroughput={'ReadCapacityUnits': 1,
+                                   'WriteCapacityUnits': 1}
+        )
+        return table
+
+    def add_items(self, table, items=None):
+        default_items = [
+            {
+                'package_name': 'z',
+                'version': '0',
+                'filename': 'x-0.tar.gz'
+            }, {
+                'package_name': 'y',
+                'version': '0',
+                'filename': 'x-0.tar.gz'
+            }, {
+                'package_name': 'x',
+                'version': '0',
+                'filename': 'x-0.tar.gz'
+            }, {
+                'package_name': 'x',
+                'version': '1',
+                'filename': 'x-1.tar.gz'
+            }
+        ]
+        _items = items if items else default_items
+        for item in _items:
+            table.put_item(Item=item)
