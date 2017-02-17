@@ -1,35 +1,10 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
 service: ${file(elasticpypi/config.json):service} # NOTE: update this with your service name
 
 provider:
   name: aws
   runtime: python2.7
   profile: ${file(elasticpypi/config.json):profile}
-
-# you can overwrite defaults here
  # stage: dev
-  region: us-west-2
-
-# you can add statements to the Lambda function's IAM Role here
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action: "s3:*"
-      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "bucket" } ] ]  }
-    - Effect: "Allow"
-      Action: "s3:*"
-      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "bucket" }, "/*" ] ]  }
 
 plugins:
   - serverless-wsgi
@@ -54,15 +29,87 @@ functions:
           path: packages/{name}
           method: get
           integration: lambda-proxy
+  s3:
+    handler: elasticpypi.handler.s3
+    events:
+      - s3:
+          bucket: ${file(elasticpypi/config.json):bucket}
+          event: s3:ObjectRemoved:*
+      - s3:
+          bucket: ${file(elasticpypi/config.json):bucket}
+          event: s3:ObjectCreated:*
 
 custom:
   wsgi:
     app: elasticpypi.api.app
 
-# you can add CloudFormation resource templates here
 resources:
  Resources:
-   bucket:
-     Type: AWS::S3::Bucket
+   packagesTable:
+     Type: AWS::DynamoDB::Table
      Properties:
-       BucketName: ${file(elasticpypi/config.json):bucket}
+       TableName: ${file(elasticpypi/config.json):table}
+       AttributeDefinitions:
+         -
+           AttributeName: "package_name"
+           AttributeType: S
+         -
+           AttributeName: "version"
+           AttributeType: S
+         -
+           AttributeName: "normalized_name"
+           AttributeType: S
+       KeySchema:
+         -
+           AttributeName: "package_name"
+           KeyType: HASH
+         -
+           AttributeName: "version"
+           KeyType: RANGE
+       GlobalSecondaryIndexes:
+         -
+           IndexName: "normalized_name-index"
+           KeySchema:
+             -
+               AttributeName: "normalized_name"
+               KeyType: HASH
+           Projection:
+               ProjectionType: ALL
+           ProvisionedThroughput:
+               ReadCapacityUnits: 1
+               WriteCapacityUnits: 1
+       ProvisionedThroughput:
+         ReadCapacityUnits: 1
+         WriteCapacityUnits: 1
+   DynamoDBIamPolicy:
+     Type: AWS::IAM::Policy
+     DependsOn: packagesTable
+     Properties:
+       PolicyName: ${file(elasticpypi/config.json):service}-lambda-dynamodb
+       PolicyDocument:
+         Version: '2012-10-17'
+         Statement:
+           - Effect: Allow
+             Action:
+               - dynamodb:GetItem
+               - dynamodb:PutItem
+               - dynamodb:DeleteItem
+               - dynamodb:Query
+               - dynamodb:Scan
+             Resource:
+               - arn:aws:dynamodb:*:*:table/${file(elasticpypi/config.json):table}
+               - arn:aws:dynamodb:*:*:table/${file(elasticpypi/config.json):table}/*
+       Roles:
+         - Ref: IamRoleLambdaExecution
+   S3IamPolicy:
+     Type: AWS::IAM::Policy
+     Properties:
+       PolicyName: ${file(elasticpypi/config.json):service}-lambda-s3
+       PolicyDocument:
+         Version: '2012-10-17'
+         Statement:
+           - Effect: Allow
+             Action: s3:GetObject
+             Resource: arn:aws:s3:::${file(elasticpypi/config.json):bucket}/*
+       Roles:
+         - Ref: IamRoleLambdaExecution
