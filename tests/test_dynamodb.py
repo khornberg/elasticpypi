@@ -1,5 +1,7 @@
 from unittest import TestCase
 from elasticpypi.dynamodb import list_packages_by_name
+from elasticpypi.handler import s3
+from tests.fixtures import delete_event, put_event
 from moto import mock_dynamodb2
 from tests import mock_dynamodb_table
 import boto3
@@ -52,3 +54,13 @@ class ElasticPypiDynamodbTests(TestCase):
         self.assertEqual('x-y-z-0.tar.gz', package_name)
         self.assertIn('s3.amazonaws.com/x.y.z-1.tar.gz', signed_url1)
         self.assertEqual('x.y.z-1.tar.gz', package_name1)
+
+    def test_record_deleted_when_delete_events_occur(self):
+        s3(delete_event, None)
+        self.assertFalse(self.table.get_item(Key={'package_name': 'z', 'version': '0'}).get('Item'))
+
+    def test_record_created_when_put_events_occur(self):
+        self.assertFalse(self.table.get_item(Key={'package_name': 'a', 'version': '0'}).get('Item'))
+        s3(put_event, None)
+        item = self.table.get_item(Key={'package_name': 'a', 'version': '0'}).get('Item')
+        self.assertEqual({'normalized_name': 'a', 'version': '0', 'package_name': 'a', 'filename': 'a-0.tar.gz'}, item)
