@@ -9,6 +9,8 @@ A *mostly* functional simple pypi service running on AWS.
 
 This is a limitation of AWS API Gateway. You will have to find other ways to upload your packages to the S3 bucket.
 
+Running `serverless wsgi` locally allows uploads to work.
+
 **Cannot browse with a browser**
 
 This is a limitation of current browsers. They have removed basic authentication for remote urls via the url (e.g. x:y@z). `WWW-Authenticate` responses do not work with AWS Lambda.
@@ -25,10 +27,11 @@ This is a limitation of current browsers. They have removed basic authentication
   "service": "serverless-service-name", // your serverless service name
   "stage": "/dev", // The slash is important as it becomes part of the url in the templates
   "bucket": "your-bucket-name", // the bucket you want packages stored in
+  "table": "you-pypi-packages-table", // the dynamodb table
   "profile": "your-aws-profile", // AWS profile for serverless
   "username": "standard", // basic auth
   "password": "something-secretive", // basic auth
-  "overwrite": false  // Only applies to the local server. If true will over write packages
+  "overwrite": false  // Only applies to the local server. If true will overwrite packages
 }
 ```
 
@@ -38,6 +41,9 @@ This is a limitation of current browsers. They have removed basic authentication
 
 1. `yarn`
 1. `sls deploy`
+
+
+**Note** that when deploying do not have the virtualenv activated. The `wsgi` pluging for serverless will automatically fetch the python requirements.
 
 # Using
 
