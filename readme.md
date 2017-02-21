@@ -55,6 +55,12 @@ Make sure you add a trailing slash as required in the PEP.
 
 Make sure you add your basic authentication credentials to your url.
 
+## Throttling
+
+AWS resources maybe throttled. As such, if you are intending to dump a bunch of packages into the S3 bucket check your
+service and account limits. Additionally, changing the read and write capacity of dynamodb may help. It is currently set
+to the lowest possible unit (1).
+
 # Testing
 
 ## Requirements
