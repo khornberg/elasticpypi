@@ -1,7 +1,8 @@
 {
   "service": "serverless-service-name",
-  "stage": "/the-slash-is-important-because-you-can-have-an-empty-string-locally",
+  "stage": "/dev",
   "bucket": "your-bucket-name",
+  "table": "your-pypi-packages-table",
   "profile": "your-aws-profile",
   "username": "standard",
   "password": "something-secretive",

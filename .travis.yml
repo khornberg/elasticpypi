@@ -1,0 +1,11 @@
+language: python
+python:
+  - 2.7
+install:
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+script:
+  - cp elasticpypi/config-example.json elasticpypi/config.json
+  - python -m pytest
+env:
+  - AWS_DEFAULT_REGION=artic-1

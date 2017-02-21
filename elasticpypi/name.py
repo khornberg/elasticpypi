@@ -39,3 +39,8 @@ def compute_package_name(path):
         parts = re.split(r'-(?=(?i)v?\d+[\.a-z])', path)
         name = '-'.join(parts[:-1])
     return name
+
+
+def normalize(name):
+    # From https://www.python.org/dev/peps/pep-0503/
+    return re.sub(r"[-_.]+", "-", name).lower()

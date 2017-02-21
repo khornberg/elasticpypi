@@ -5,6 +5,11 @@ import io
 from elasticpypi.api import app
 from elasticpypi.config import config
 from tests import fixtures
+import boto3
+from moto import mock_dynamodb2
+from tests import mock_dynamodb_table
+
+TABLE = config['table']
 
 
 class SimpleTests(TestCase):
@@ -26,13 +31,23 @@ class SimpleTests(TestCase):
         response = self.client.post('/simple/')
         self.assert401(response)
 
-    @mock.patch('elasticpypi.s3.list_packages')
-    def test_get_simple_200(self, list_packages):
-        list_packages.return_value = [('x', 'x'), ('y', 'y'), ('z', 'z')]
+    @mock_dynamodb2
+    def test_get_simple_200_from_dynamodb(self):
+        mock_dynamodb_table.make_table(items=[
+            {
+                'package_name': 'z',
+                'version': '0'
+            }, {
+                'package_name': 'y',
+                'version': '0'
+            }, {
+                'package_name': 'x',
+                'version': '0'
+            }
+        ])
         response = self.client.get('/simple/', headers=self.headers)
         self.assert200(response)
         self.assertEqual(response.data, fixtures.simple_html)
-        list_packages.assert_called_with()
 
     @mock.patch('elasticpypi.s3.exists')
     @mock.patch('elasticpypi.s3.upload')

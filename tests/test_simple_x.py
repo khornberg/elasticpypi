@@ -1,9 +1,13 @@
+import re
 from flask_testing import TestCase
 from base64 import b64encode
-import mock
 from elasticpypi.api import app
 from elasticpypi.config import config
 from tests import fixtures
+from moto import mock_dynamodb2
+from tests import mock_dynamodb_table
+
+TABLE = config['table']
 
 
 class ElasticPypiTests(TestCase):
@@ -21,11 +25,32 @@ class ElasticPypiTests(TestCase):
         response = self.client.get('/simple/x/')
         self.assert401(response)
 
-    @mock.patch('elasticpypi.s3.signed_url')
-    @mock.patch('elasticpypi.s3.list_packages')
-    def test_get_simple_x_200(self, list_packages, signed_url):
-        list_packages.return_value = [('https://xyz', 'x-0.3.3.tar.gz'), ('https://xyz', 'x-1.1.1.tar.gz')]
+    @mock_dynamodb2
+    def test_get_simple_x_200_from_dynamodb(self):
+        mock_dynamodb_table.make_table([
+            {
+                'package_name': 'z',
+                'version': '0',
+                'normalized_name': 'z',
+                'filename': 'x-0.tar.gz'
+            }, {
+                'package_name': 'y',
+                'version': '0',
+                'normalized_name': 'y',
+                'filename': 'x-0.tar.gz'
+            }, {
+                'package_name': 'x',
+                'version': '0',
+                'normalized_name': 'x',
+                'filename': 'x-0.tar.gz'
+            }, {
+                'package_name': 'x',
+                'version': '1',
+                'normalized_name': 'x',
+                'filename': 'x-1.tar.gz'
+            }
+        ])
         response = self.client.get('/simple/x/', headers=self.headers)
+        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data)  # Remove signed url since it changes
         self.assert200(response)
-        self.assertEqual(response.data, fixtures.links_html)
-        list_packages.assert_called_with('x', True)
+        self.assertEqual(html, fixtures.links_html)
