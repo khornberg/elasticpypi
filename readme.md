@@ -43,7 +43,7 @@ This is a limitation of current browsers. They have removed basic authentication
 1. `sls deploy`
 
 
-**Note** that when deploying do not have the virtualenv activated. The `wsgi` pluging for serverless will automatically fetch the python requirements.
+**Note** that when deploying do not have the virtualenv activated. The `wsgi` plugin for serverless will automatically fetch the python requirements.
 
 # Using
 
