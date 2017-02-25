@@ -9,7 +9,7 @@ provider:
 
   environment:
     service: ${self:service}
-    stage: ${self:provider.stage},
+    stage: "/${self:provider.stage}"
     bucket: "elasticpypi"             # CHANGE ME
     table: "elasticpypi"
     username: "elasticpypi"
