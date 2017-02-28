@@ -3,6 +3,7 @@ service: ${file(elasticpypi/config.json):service} # NOTE: update this with your 
 provider:
   name: aws
   runtime: python2.7
+  memorySize: 128
   profile: ${file(elasticpypi/config.json):profile}
  # stage: dev
 
