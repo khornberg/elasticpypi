@@ -68,6 +68,23 @@ to the lowest possible unit (1).
 1. Install testing requirements from `test-requirements.txt`
 1. Run `python -m pytest`
 
+## docker-test.sh
+
+If you have Docker installed, try the script. For example, this will build the Docker image, run the tests and start an
+interactive container.
+
+    $ ./docker-test.sh build test debug
+
+### Usage
+
+    $ ./docker-test.sh help
+    run this from inside your elasticpypi repo dir.
+    options:
+      build  - Builds the Dockerfile before running tests.
+      test   - Runs tests inside a Docker container
+      debug  - Runs bash in an interactive Docker container
+               with /home/sam/source/elasticpypi mounted at /code
+
 # Todo
 
 1. Proxy for packages not found
