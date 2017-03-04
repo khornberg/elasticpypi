@@ -83,7 +83,7 @@ interactive container.
       build  - Builds the Dockerfile before running tests.
       test   - Runs tests inside a Docker container
       debug  - Runs bash in an interactive Docker container
-               with /home/sam/source/elasticpypi mounted at /code
+               with `pwd` mounted at /code
 
 # Todo
 
