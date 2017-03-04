@@ -5,7 +5,13 @@ install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
 script:
-  - cp elasticpypi/config-example.json elasticpypi/config.json
   - python -m pytest
 env:
   - AWS_DEFAULT_REGION=artic-1
+  - SERVICE=serverless-service-name
+  - STAGE=/dev
+  - BUCKET=your-bucket-name
+  - TABLE=elasticpypi
+  - USERNAME=elasticpypi
+  - PASSWORD=something-secretive
+  - OVERWRITE=false
