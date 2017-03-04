@@ -22,17 +22,33 @@ This is a limitation of current browsers. They have removed basic authentication
 
 ## Configuration
 
+### Warning for Upgraders!
+
+The configuration now lives in serverless.yml and is consumed by elasticpypi as environment variables. If you are
+upgrading, you will need to move your configuration from config.json to serverless.yml.
+
+### serverless.yml
+
 ```
-{
-  "service": "serverless-service-name", // your serverless service name
-  "stage": "/dev", // The slash is important as it becomes part of the url in the templates
-  "bucket": "your-bucket-name", // the bucket you want packages stored in
-  "table": "you-pypi-packages-table", // the dynamodb table
-  "profile": "your-aws-profile", // AWS profile for serverless
-  "username": "standard", // basic auth
-  "password": "something-secretive", // basic auth
-  "overwrite": false  // Only applies to the local server. If true will overwrite packages
-}
+service: elasticpypi
+
+provider:
+  name: aws
+  runtime: python2.7
+  memorySize: 128
+  stage: dev
+  # profile: "some-local-aws-config-profile"
+  # region: us-east-1
+
+  environment:
+    SERVICE: ${self:service}          # See above. Defaults to elasticpypi
+    STAGE: "/${self:provider.stage}"  # See above. Defaults to dev
+    BUCKET: "elasticpypi"             # CHANGE ME
+    TABLE: "elasticpypi"              # You can change me if you want, but do you?
+    USERNAME: "elasticpypi"           # You can change me if you want, but do you?
+    PASSWORD: "something-secretive"   # CHANGE ME
+    OVERWRITE: false                  # Only applies to the local server.
+                                      # If true will overwrite packages
 ```
 
 # Deploy
