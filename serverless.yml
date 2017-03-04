@@ -10,13 +10,13 @@ provider:
   # region: us-east-1
 
   environment:
-    service: ${self:service}
-    stage: "/${self:provider.stage}"
-    bucket: "elasticpypi"             # CHANGE ME
-    table: "elasticpypi"
-    username: "elasticpypi"
-    password: "something-secretive"   # CHANGE ME
-    overwrite: false  # Only applies to the local server. If true will overwrite packages
+    SERVICE: ${self:service}
+    STAGE: "/${self:provider.stage}"
+    BUCKET: "elasticpypi"             # CHANGE ME
+    TABLE: "elasticpypi"
+    USERNAME: "elasticpypi"
+    PASSWORD: "something-secretive"   # CHANGE ME
+    OVERWRITE: false  # Only applies to the local server. If true will overwrite packages
 
 plugins:
   - serverless-wsgi
