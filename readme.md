@@ -22,11 +22,6 @@ This is a limitation of current browsers. They have removed basic authentication
 
 ## Configuration
 
-### Warning for Upgraders!
-
-The configuration now lives in serverless.yml and is consumed by elasticpypi as environment variables. If you are
-upgrading, you will need to move your configuration from config.json to serverless.yml.
-
 ### serverless.yml
 
 ```
@@ -84,12 +79,23 @@ to the lowest possible unit (1).
 1. Install testing requirements from `test-requirements.txt`
 1. Run `python -m pytest`
 
-## docker-test.sh
+## Using Docker
 
-If you have Docker installed, try the script. For example, this will build the Docker image, run the tests and start an
-interactive container.
+The example below runs the full test suite. To debug, add `/bin/bash` to the end of the command.
 
-    $ ./docker-test.sh build test debug
+    $ sudo docker build -t elasticpypi-test .
+    $ sudo docker run -it \
+        -v $(pwd):/code \
+        -e AWS_DEFAULT_REGION=artic-1 \
+        -e SERVICE=serverless-service-name \
+        -e STAGE=/dev \
+        -e BUCKET=your-bucket-name \
+        -e TABLE=elasticpypi \
+        -e USERNAME=elasticpypi \
+        -e PASSWORD=something-secretive \
+        -e OVERWRITE=false \
+        elasticpypi-test
+
 
 ### Usage
 
@@ -105,3 +111,10 @@ interactive container.
 
 1. Proxy for packages not found
 1. Token auth of some kind for browsing in a browser
+
+# Changelog
+
+* *2017-03-12* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as
+environment variables. If you are upgrading from an older version, you may need to migrate your configuration to
+serverless.yml.
+
