@@ -5,6 +5,5 @@
   "table": "your-pypi-packages-table",
   "profile": "your-aws-profile",
   "username": "standard",
-  "password": "something-secretive",
-  "overwrite": false
+  "password": "something-secretive"
 }
