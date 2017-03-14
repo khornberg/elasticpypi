@@ -1,6 +1,6 @@
-mock
-Flask-Testing==0.6.1
-pytest
-moto
-boto
-boto3
+mock==2.0.0
+Flask-Testing==0.6.2
+pytest==3.0.6
+moto==0.4.31
+boto==2.46.1
+boto3==1.4.4

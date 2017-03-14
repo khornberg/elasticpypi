@@ -5,11 +5,9 @@ A *mostly* functional simple pypi service running on AWS.
 
 # Caveats
 
-**Uploads do not work**
+**`python setup.py sdist` does not work**
 
-This is a limitation of AWS API Gateway. You will have to find other ways to upload your packages to the S3 bucket.
-
-Running `serverless wsgi` locally allows uploads to work.
+This is a limitation of AWS API Gateway. There are numerous other ways to upload your packages to the S3 bucket.
 
 **Cannot browse with a browser**
 
