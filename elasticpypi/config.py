@@ -1,7 +1,14 @@
-import json
 import os
 
+WATCHED=[
+    'SERVICE',
+    'STAGE',
+    'BUCKET',
+    'TABLE',
+    'USERNAME',
+    'PASSWORD',
+    'OVERWRITE'
+]
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-with open('{}/config.json'.format(dir_path), 'r') as f:
-    config = json.load(f)
+# load config
+config = {k.lower(): v for k, v in os.environ.iteritems() if k in WATCHED}

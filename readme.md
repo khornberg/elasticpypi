@@ -15,21 +15,32 @@ This is a limitation of current browsers. They have removed basic authentication
 
 # Setup
 
-1. Copy `elasticpypi/config-example.json` to `elasticpypi/config.json`
-1. Edit `config.json`
+1. Edit `serverless.yml`
 
 ## Configuration
 
+### serverless.yml
+
 ```
-{
-  "service": "serverless-service-name", // your serverless service name
-  "stage": "/dev", // The slash is important as it becomes part of the url in the templates
-  "bucket": "your-bucket-name", // the bucket you want packages stored in
-  "table": "you-pypi-packages-table", // the dynamodb table
-  "profile": "your-aws-profile", // AWS profile for serverless
-  "username": "standard", // basic auth
-  "password": "something-secretive", // basic auth
-}
+service: elasticpypi
+
+provider:
+  name: aws
+  runtime: python2.7
+  memorySize: 128
+  stage: dev
+  # profile: "some-local-aws-config-profile"
+  # region: us-east-1
+
+  environment:
+    SERVICE: ${self:service}          # See above. Defaults to elasticpypi
+    STAGE: "/${self:provider.stage}"  # See above. Defaults to dev
+    BUCKET: "elasticpypi"             # CHANGE ME
+    TABLE: "elasticpypi"              # You can change me if you want, but do you?
+    USERNAME: "elasticpypi"           # You can change me if you want, but do you?
+    PASSWORD: "something-secretive"   # CHANGE ME
+    OVERWRITE: false                  # Only applies to the local server.
+                                      # If true will overwrite packages
 ```
 
 # Deploy
@@ -65,7 +76,29 @@ to the lowest possible unit (1).
 1. Install testing requirements from `test-requirements.txt`
 1. Run `python -m pytest`
 
+## Using Docker
+
+The example below runs the full test suite. To debug, add `/bin/bash` to the end of the command.
+
+    $ sudo docker build -t elasticpypi-test .
+    $ sudo docker run -it \
+        -v $(pwd):/code \
+        -e AWS_DEFAULT_REGION=artic-1 \
+        -e SERVICE=serverless-service-name \
+        -e STAGE=/dev \
+        -e BUCKET=your-bucket-name \
+        -e TABLE=elasticpypi \
+        -e USERNAME=elasticpypi \
+        -e PASSWORD=something-secretive \
+        -e OVERWRITE=false \
+        elasticpypi-test
+
 # Todo
 
 1. Proxy for packages not found
 1. Token auth of some kind for browsing in a browser
+
+# Changelog
+
+* *2017-03-24* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as environment variables. If you are upgrading from an older version, you may need to migrate your configuration to serverless.yml.
+

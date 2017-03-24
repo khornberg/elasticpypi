@@ -1,11 +1,21 @@
-service: ${file(elasticpypi/config.json):service} # NOTE: update this with your service name
+service: elasticpypi
 
 provider:
   name: aws
   runtime: python2.7
   memorySize: 128
-  profile: ${file(elasticpypi/config.json):profile}
- # stage: dev
+  stage: dev
+  # profile: "some-local-aws-config-profile"
+  # region: us-east-1
+
+  environment:
+    SERVICE: ${self:service}
+    STAGE: "/${self:provider.stage}"
+    BUCKET: "elasticpypi"             # CHANGE ME
+    TABLE: "elasticpypi"
+    USERNAME: "elasticpypi"
+    PASSWORD: "something-secretive"   # CHANGE ME
+    OVERWRITE: false  # Only applies to the local server. If true will overwrite packages
 
 plugins:
   - serverless-wsgi
