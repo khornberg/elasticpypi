@@ -15,8 +15,7 @@ This is a limitation of current browsers. They have removed basic authentication
 
 # Setup
 
-1. Copy `elasticpypi/config-example.json` to `elasticpypi/config.json`
-1. Edit `config.json`
+1. Edit `serverless.yml`
 
 ## Configuration
 
@@ -94,17 +93,6 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         -e OVERWRITE=false \
         elasticpypi-test
 
-
-### Usage
-
-    $ ./docker-test.sh help
-    run this from inside your elasticpypi repo dir.
-    options:
-      build  - Builds the Dockerfile before running tests.
-      test   - Runs tests inside a Docker container
-      debug  - Runs bash in an interactive Docker container
-               with `pwd` mounted at /code
-
 # Todo
 
 1. Proxy for packages not found
@@ -112,7 +100,5 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
 
 # Changelog
 
-* *2017-03-12* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as
-environment variables. If you are upgrading from an older version, you may need to migrate your configuration to
-serverless.yml.
+* *2017-03-24* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as environment variables. If you are upgrading from an older version, you may need to migrate your configuration to serverless.yml.
 
