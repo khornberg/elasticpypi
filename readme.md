@@ -39,8 +39,6 @@ provider:
     TABLE: "elasticpypi"              # You can change me if you want, but do you?
     USERNAME: "elasticpypi"           # You can change me if you want, but do you?
     PASSWORD: "something-secretive"   # CHANGE ME
-    OVERWRITE: false                  # Only applies to the local server.
-                                      # If true will overwrite packages
 ```
 
 # Deploy
