@@ -29,22 +29,22 @@ class ElasticPypiTests(TestCase):
     def test_get_simple_x_200_from_dynamodb(self):
         mock_dynamodb_table.make_table([
             {
-                'package_name': 'z',
+                'package_name': 'z-0.tar.gz',
                 'version': '0',
                 'normalized_name': 'z',
-                'filename': 'x-0.tar.gz'
+                'filename': 'z-0.tar.gz'
             }, {
-                'package_name': 'y',
+                'package_name': 'y-0.tar.gz',
                 'version': '0',
                 'normalized_name': 'y',
-                'filename': 'x-0.tar.gz'
+                'filename': 'y-0.tar.gz'
             }, {
-                'package_name': 'x',
+                'package_name': 'x-0.tar.gz',
                 'version': '0',
                 'normalized_name': 'x',
                 'filename': 'x-0.tar.gz'
             }, {
-                'package_name': 'x',
+                'package_name': 'x-1.tar.gz',
                 'version': '1',
                 'normalized_name': 'x',
                 'filename': 'x-1.tar.gz'

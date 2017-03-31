@@ -7,32 +7,32 @@ TABLE = config['table']
 def add_items(table, items=None):
     default_items = [
         {
-            'package_name': 'z',
+            'package_name': 'z-0.tar.gz',
             'version': '0',
             'normalized_name': 'z',
             'filename': 'z-0.tar.gz'
         }, {
-            'package_name': 'y',
+            'package_name': 'y-0.tar.gz',
             'version': '0',
             'normalized_name': 'y',
             'filename': 'y-0.tar.gz'
         }, {
-            'package_name': 'x',
+            'package_name': 'x-0.tar.gz',
             'version': '0',
             'normalized_name': 'x',
             'filename': 'x-0.tar.gz'
         }, {
-            'package_name': 'x-y-z',
+            'package_name': 'x-y-z-0.tar.gz',
             'version': '0',
             'normalized_name': 'x-y-z',
             'filename': 'x-y-z-0.tar.gz'
         }, {
-            'package_name': 'x.y.z',
+            'package_name': 'x.y.z-1.tar.gz',
             'version': '1',
             'normalized_name': 'x-y-z',
             'filename': 'x.y.z-1.tar.gz'
         }, {
-            'package_name': 'xy',
+            'package_name': 'Xy-1.tar.gz',
             'version': '1',
             'normalized_name': 'xy',
             'filename': 'Xy-1.tar.gz'
