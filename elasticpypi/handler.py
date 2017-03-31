@@ -13,13 +13,13 @@ def s3(event, context):
     version = compute_version(filename)
     normalized_name = normalize(package_name)
     if 'Delete' in event['Records'][0]['eventName']:
-        delete_item(package_name, version, table, filename)
+        delete_item(version, table, filename)
         return None
-    put_item(package_name, version, filename, normalized_name, table)
+    put_item(version, filename, normalized_name, table)
     return None
 
 
-def delete_item(package_name, version, table, filename):
+def delete_item(version, table, filename):
     table.delete_item(
         Key={
             'package_name': filename,
@@ -28,7 +28,7 @@ def delete_item(package_name, version, table, filename):
     )
 
 
-def put_item(package_name, version, filename, normalized_name, table):
+def put_item(version, filename, normalized_name, table):
     table.put_item(
         Item={
             'package_name': filename,
