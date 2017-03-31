@@ -5,7 +5,7 @@
   },
   "name": "elasticpypi",
   "description": "elastic pypi",
-  "version": "0.0.0",
+  "version": "2.1.0",
   "main": "index.js",
   "directories": {
     "test": "tests"
