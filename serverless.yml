@@ -15,7 +15,6 @@ provider:
     TABLE: "elasticpypi"
     USERNAME: "elasticpypi"
     PASSWORD: "something-secretive"   # CHANGE ME
-    OVERWRITE: false  # Only applies to the local server. If true will overwrite packages
 
 plugins:
   - serverless-wsgi
@@ -44,10 +43,10 @@ functions:
     handler: elasticpypi.handler.s3
     events:
       - s3:
-          bucket: ${file(elasticpypi/config.json):bucket}
+          bucket: ${self:provider.environment.BUCKET}
           event: s3:ObjectRemoved:*
       - s3:
-          bucket: ${file(elasticpypi/config.json):bucket}
+          bucket: ${self:provider.environment.BUCKET}
           event: s3:ObjectCreated:*
 
 custom:
@@ -59,7 +58,7 @@ resources:
    packagesTable:
      Type: AWS::DynamoDB::Table
      Properties:
-       TableName: ${file(elasticpypi/config.json):table}
+       TableName: ${self:provider.environment.TABLE}
        AttributeDefinitions:
          -
            AttributeName: "package_name"
@@ -96,7 +95,7 @@ resources:
      Type: AWS::IAM::Policy
      DependsOn: packagesTable
      Properties:
-       PolicyName: ${file(elasticpypi/config.json):service}-lambda-dynamodb
+       PolicyName: ${self:service}-lambda-dynamodb
        PolicyDocument:
          Version: '2012-10-17'
          Statement:
@@ -108,19 +107,19 @@ resources:
                - dynamodb:Query
                - dynamodb:Scan
              Resource:
-               - arn:aws:dynamodb:*:*:table/${file(elasticpypi/config.json):table}
-               - arn:aws:dynamodb:*:*:table/${file(elasticpypi/config.json):table}/*
+               - arn:aws:dynamodb:*:*:table/${self:provider.environment.TABLE}
+               - arn:aws:dynamodb:*:*:table/${self:provider.environment.TABLE}/*
        Roles:
          - Ref: IamRoleLambdaExecution
    S3IamPolicy:
      Type: AWS::IAM::Policy
      Properties:
-       PolicyName: ${file(elasticpypi/config.json):service}-lambda-s3
+       PolicyName: ${self:service}-lambda-s3
        PolicyDocument:
          Version: '2012-10-17'
          Statement:
            - Effect: Allow
              Action: s3:GetObject
-             Resource: arn:aws:s3:::${file(elasticpypi/config.json):bucket}/*
+             Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
        Roles:
          - Ref: IamRoleLambdaExecution

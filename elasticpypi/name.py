@@ -41,6 +41,17 @@ def compute_package_name(path):
     return name
 
 
+def compute_version(path):
+    path = os.path.basename(path)
+    if path.endswith(".whl"):
+        m = wheel_file_re.match(path)
+        return m.group("ver")
+    match = re.match('.+-(?P<version>.*)\.tar\.gz$', path)
+    if match:
+        return match.group('version')
+    return 0
+
+
 def normalize(name):
     # From https://www.python.org/dev/peps/pep-0503/
     return re.sub(r"[-_.]+", "-", name).lower()

@@ -25,5 +25,7 @@ def list_packages_by_name(dynamodb, package_name):
         ProjectionExpression='filename',
         ScanIndexForward=False,
     )
-    packages = [(s3.signed_url(package['filename']), package['filename']) for package in dynamodb_packages['Items']]
+    packages = [
+        (s3.signed_url(package['filename']), package['filename']) for package in sorted(dynamodb_packages['Items'])
+    ]
     return packages

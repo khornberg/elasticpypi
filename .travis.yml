@@ -6,13 +6,3 @@ install:
   - pip install -r test-requirements.txt
 script:
   - python -m pytest
-env:
-  global:
-    - AWS_DEFAULT_REGION=artic-1
-    - SERVICE=serverless-service-name
-    - STAGE=/dev
-    - BUCKET=your-bucket-name
-    - TABLE=elasticpypi
-    - USERNAME=elasticpypi
-    - PASSWORD=something-secretive
-    - OVERWRITE=false
