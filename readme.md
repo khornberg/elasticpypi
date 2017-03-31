@@ -83,14 +83,6 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
     $ sudo docker build -t elasticpypi-test .
     $ sudo docker run -it \
         -v $(pwd):/code \
-        -e AWS_DEFAULT_REGION=artic-1 \
-        -e SERVICE=serverless-service-name \
-        -e STAGE=/dev \
-        -e BUCKET=your-bucket-name \
-        -e TABLE=elasticpypi \
-        -e USERNAME=elasticpypi \
-        -e PASSWORD=something-secretive \
-        -e OVERWRITE=false \
         elasticpypi-test
 
 # Todo
