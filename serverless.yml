@@ -54,72 +54,72 @@ custom:
     app: elasticpypi.api.app
 
 resources:
- Resources:
-   packagesTable:
-     Type: AWS::DynamoDB::Table
-     Properties:
-       TableName: ${self:provider.environment.TABLE}
-       AttributeDefinitions:
-         -
-           AttributeName: "package_name"
-           AttributeType: S
-         -
-           AttributeName: "version"
-           AttributeType: S
-         -
-           AttributeName: "normalized_name"
-           AttributeType: S
-       KeySchema:
-         -
-           AttributeName: "package_name"
-           KeyType: HASH
-         -
-           AttributeName: "version"
-           KeyType: RANGE
-       GlobalSecondaryIndexes:
-         -
-           IndexName: "normalized_name-index"
-           KeySchema:
-             -
-               AttributeName: "normalized_name"
-               KeyType: HASH
-           Projection:
-               ProjectionType: ALL
-           ProvisionedThroughput:
-               ReadCapacityUnits: 1
-               WriteCapacityUnits: 1
-       ProvisionedThroughput:
-         ReadCapacityUnits: 1
-         WriteCapacityUnits: 1
-   DynamoDBIamPolicy:
-     Type: AWS::IAM::Policy
-     DependsOn: packagesTable
-     Properties:
-       PolicyName: ${self:service}-lambda-dynamodb
-       PolicyDocument:
-         Version: '2012-10-17'
-         Statement:
-           - Effect: Allow
-             Action:
-               - dynamodb:GetItem
-               - dynamodb:PutItem
-               - dynamodb:DeleteItem
-               - dynamodb:Query
-               - dynamodb:Scan
-             Resource:
-               - arn:aws:dynamodb:*:*:table/${self:provider.environment.TABLE}
-               - arn:aws:dynamodb:*:*:table/${self:provider.environment.TABLE}/*
-       Roles:
-         - Ref: IamRoleLambdaExecution
-   S3IamPolicy:
-     Type: AWS::IAM::Policy
-     Properties:
-       PolicyName: ${self:service}-lambda-s3
-       PolicyDocument:
-         Version: '2012-10-17'
-         Statement:
-           - Effect: Allow
-             Action: s3:GetObject
-             Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
-       Roles:
-         - Ref: IamRoleLambdaExecution
+  Resources:
+    packagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE}
+        AttributeDefinitions:
+          -
+            AttributeName: "package_name"
+            AttributeType: S
+          -
+            AttributeName: "version"
+            AttributeType: S
+          -
+            AttributeName: "normalized_name"
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: "package_name"
+            KeyType: HASH
+          -
+            AttributeName: "version"
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          -
+            IndexName: "normalized_name-index"
+            KeySchema:
+              -
+                AttributeName: "normalized_name"
+                KeyType: HASH
+            Projection:
+                ProjectionType: ALL
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    DynamoDBIamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: packagesTable
+      Properties:
+        PolicyName: ${self:service}-lambda-dynamodb
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:DeleteItem
+                - dynamodb:Query
+                - dynamodb:Scan
+              Resource:
+                - arn:aws:dynamodb:*:*:table/${self:provider.environment.TABLE}
+                - arn:aws:dynamodb:*:*:table/${self:provider.environment.TABLE}/*
+        Roles:
+          - Ref: IamRoleLambdaExecution
+    S3IamPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: ${self:service}-lambda-s3
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
+        Roles:
+          - Ref: IamRoleLambdaExecution
