@@ -43,9 +43,9 @@ provider:
 
 # Deploy
 
-`yarn` and `pip` are required to install the necessary packages to deploy.
+`npm`/`yarn` and `pip` are required to install the necessary packages to deploy.
 
-1. `yarn`
+1. `yarn` or `npm install`
 1. `sls deploy`
 
 
