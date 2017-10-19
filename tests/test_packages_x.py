@@ -15,7 +15,8 @@ class ElasticPypiTests(TestCase):
     def setUp(self):
         password = config['password']
         username = config['username']
-        self.headers = {'Authorization': 'Basic ' + b64encode("{0}:{1}".format(username, password))}
+        basic_hash = '{0}:{1}'.format(username, password)
+        self.headers = {'Authorization': 'Basic ' + b64encode(basic_hash.encode('utf-8')).decode()}
 
     def test_get_packages_x_401(self):
         response = self.client.get('/packages/x')
@@ -27,5 +28,5 @@ class ElasticPypiTests(TestCase):
         download.return_value = f
         response = self.client.get('/packages/x', headers=self.headers)
         self.assert200(response)
-        self.assertEquals(response.data, 'hello')
+        self.assertEquals(response.data, b'hello')
         f.close()
