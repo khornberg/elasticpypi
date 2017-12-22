@@ -2,7 +2,7 @@ service: elasticpypi
 
 provider:
   name: aws
-  runtime: python2.7
+  runtime: python3.6
   memorySize: 128
   stage: dev
   # profile: "some-local-aws-config-profile"

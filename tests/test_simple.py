@@ -18,7 +18,8 @@ class SimpleTests(TestCase):
     def setUp(self):
         password = config['password']
         username = config['username']
-        self.headers = {'Authorization': 'Basic ' + b64encode("{0}:{1}".format(username, password))}
+        basic_hash = '{0}:{1}'.format(username, password)
+        self.headers = {'Authorization': 'Basic ' + b64encode(basic_hash.encode('utf-8')).decode()}
 
     def test_get_simple_401(self):
         response = self.client.get('/simple/')
@@ -40,4 +41,4 @@ class SimpleTests(TestCase):
         ])
         response = self.client.get('/simple/', headers=self.headers)
         self.assert200(response)
-        self.assertEqual(response.data, fixtures.simple_html)
+        self.assertEqual(response.data.decode(), fixtures.simple_html)

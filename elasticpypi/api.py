@@ -2,7 +2,7 @@ import boto3
 from flask import Flask
 from flask import send_file
 from flask import render_template
-from auth import requires_auth
+from elasticpypi.auth import requires_auth
 from elasticpypi import s3, dynamodb
 from elasticpypi.config import config
 

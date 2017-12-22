@@ -5,14 +5,14 @@
   },
   "name": "elasticpypi",
   "description": "elastic pypi",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "main": "index.js",
   "directories": {
     "test": "tests"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Run tests with pytest\" && exit 1"
   },
   "repository": {
     "type": "git",

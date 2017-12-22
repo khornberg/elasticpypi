@@ -19,7 +19,8 @@ class ElasticPypiTests(TestCase):
     def setUp(self):
         password = config['password']
         username = config['username']
-        self.headers = {'Authorization': 'Basic ' + b64encode("{0}:{1}".format(username, password))}
+        basic_hash = '{0}:{1}'.format(username, password)
+        self.headers = {'Authorization': 'Basic ' + b64encode(basic_hash.encode('utf-8')).decode()}
 
     def test_get_simple_x_401(self):
         response = self.client.get('/simple/x/')
@@ -51,6 +52,6 @@ class ElasticPypiTests(TestCase):
             }
         ])
         response = self.client.get('/simple/x/', headers=self.headers)
-        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data)  # Remove signed url since it changes
+        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data.decode())  # Remove signed url since it changes
         self.assert200(response)
         self.assertEqual(html, fixtures.links_html)
