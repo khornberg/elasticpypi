@@ -1,4 +1,5 @@
 import boto3
+import urllib
 from elasticpypi.name import compute_package_name, normalize, compute_version
 from elasticpypi.config import config
 
@@ -31,9 +32,9 @@ def delete_item(version, table, filename):
 def put_item(version, filename, normalized_name, table):
     table.put_item(
         Item={
-            'package_name': filename,
-            'version': version,
-            'filename': filename,
-            'normalized_name': normalized_name,
+            'package_name': urllib.unquote_plus(filename),
+            'version': urllib.unquote_plus(version),
+            'filename': urllib.unquote_plus(filename),
+            'normalized_name': urllib.unquote_plus(normalized_name),
         }
     )
