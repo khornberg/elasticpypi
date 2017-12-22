@@ -19,6 +19,14 @@ provider:
 plugins:
   - serverless-wsgi
 
+package:
+  exclude:
+    - node_modules/**
+    - tests/**
+    - .cache/**
+    - __pycache__/**
+    - docs/**
+
 functions:
   api:
     handler: wsgi.handler
