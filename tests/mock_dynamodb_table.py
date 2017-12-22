@@ -44,7 +44,7 @@ def add_items(table, items=None):
 
 
 def make_table(items=None):
-    dynamodb = boto3.resource('dynamodb', region_name='artic-1')
+    dynamodb = boto3.resource('dynamodb', region_name='us-east-2')
     table = dynamodb.create_table(
         TableName=TABLE,
         KeySchema=[
