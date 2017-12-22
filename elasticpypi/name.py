@@ -4,10 +4,9 @@ From https://github.com/vendasta/cloudpypi/blob/master/cloudpypi/package_api.py#
 import os
 import re
 
-_archive_suffix_re = re.compile(
-    r"(\.zip|\.tar\.gz|\.tgz|\.tar\.bz3|-py[23]\.\d-.*|\.win-amd64-py[23]\.\d\..*|\.win32-py[23]\.\d\..*)$",  # noqa
-    re.IGNORECASE
-)
+ARCHIVE_SUFFIX = r"(\.zip|\.tar\.gz|\.tgz|\.tar\.bz3|-py[23]\.\d-.*|\.win-amd64-py[23]\.\d\..*|\.win32-py[23]\.\d\..*)$"
+
+_archive_suffix_re = re.compile(ARCHIVE_SUFFIX, re.IGNORECASE)
 
 wheel_file_re = re.compile(
     r"""^(?P<namever>(?P<name>.+?)-(?P<ver>\d.*?))
@@ -46,7 +45,7 @@ def compute_version(path):
     if path.endswith(".whl"):
         m = wheel_file_re.match(path)
         return m.group("ver")
-    match = re.match('.+-(?P<version>.*)\.tar\.gz$', path)
+    match = re.match(f'.+-(?P<version>.*){ARCHIVE_SUFFIX}$', path)
     if match:
         return match.group('version')
     return 0
