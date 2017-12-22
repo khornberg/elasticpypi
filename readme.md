@@ -85,7 +85,7 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
 
 # Changelog
 
-* *2017-12-22* Use Python 3
+* *2017-12-22* Use Python 3, downloads go through the API Gateway so pip's caching now works
 
 * *2017-03-24* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as environment variables. If you are upgrading from an older version, you may need to migrate your configuration to serverless.yml.
 
