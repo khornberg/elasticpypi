@@ -60,15 +60,15 @@ class ElasticPypiDynamodbTests(TestCase):
         self.assertFalse(self.table.get_item(Key={'package_name': 'z', 'version': '0'}).get('Item'))
 
     def test_record_created_when_put_events_occur(self):
-        self.assertFalse(self.table.get_item(Key={'package_name': 'a-0.tar.gz', 'version': '0'}).get('Item'))
+        self.assertFalse(self.table.get_item(Key={'package_name': 'a b-0.tar.gz', 'version': '0'}).get('Item'))
         s3(put_event, None)
-        item = self.table.get_item(Key={'package_name': 'a-0.tar.gz', 'version': '0'}).get('Item')
+        item = self.table.get_item(Key={'package_name': 'a b-0.tar.gz', 'version': '0'}).get('Item')
         self.assertEqual(
             {
-                'normalized_name': 'a',
+                'normalized_name': 'a b',
                 'version': '0',
-                'package_name': 'a-0.tar.gz',
-                'filename': 'a-0.tar.gz'
+                'package_name': 'a b-0.tar.gz',
+                'filename': 'a b-0.tar.gz'
             }, item
         )
 
