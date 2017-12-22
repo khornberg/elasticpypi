@@ -32,9 +32,9 @@ def delete_item(version, table, filename):
 def put_item(version, filename, normalized_name, table):
     table.put_item(
         Item={
-            'package_name': urllib.unquote_plus(filename),
-            'version': urllib.unquote_plus(version),
-            'filename': urllib.unquote_plus(filename),
-            'normalized_name': urllib.unquote_plus(normalized_name),
+            'package_name': urllib.parse.unquote_plus(filename),
+            'version': urllib.parse.unquote_plus(version),
+            'filename': urllib.parse.unquote_plus(filename),
+            'normalized_name': urllib.parse.unquote_plus(normalized_name),
         }
     )
