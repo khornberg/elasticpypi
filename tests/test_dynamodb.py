@@ -19,16 +19,16 @@ class ElasticPypiDynamodbTests(TestCase):
 
     def test_list_packages_by_name_pip8_single_word(self):
         packages = list_packages_by_name(self.dynamodb, 'x')
-        signed_url, package_name = packages[0]
+        url, package_name = packages[0]
         self.assertEqual(1, len(packages))
-        self.assertIn('https://s3.us-east-2.amazonaws.com/your-bucket-name/x-0.tar.gz', signed_url)
+        self.assertIn('x-0.tar.gz', url)
         self.assertEqual('x-0.tar.gz', package_name)
 
     def test_list_packages_by_name_pip7_single_word(self):
         packages = list_packages_by_name(self.dynamodb, 'Xy')
-        signed_url, package_name = packages[0]
+        url, package_name = packages[0]
         self.assertEqual(1, len(packages))
-        self.assertIn('https://s3.us-east-2.amazonaws.com/your-bucket-name/Xy-1.tar.gz', signed_url)
+        self.assertIn('Xy-1.tar.gz', url)
         self.assertEqual('Xy-1.tar.gz', package_name)
 
     def test_list_packages_by_name_pip8_single_word_not_found(self):
@@ -37,22 +37,22 @@ class ElasticPypiDynamodbTests(TestCase):
 
     def test_list_packages_by_name_pip8_name_spaced_package(self):
         packages = list_packages_by_name(self.dynamodb, 'x-y-z')
-        signed_url, package_name = packages[0]
-        signed_url1, package_name1 = packages[1]
+        url, package_name = packages[0]
+        url1, package_name1 = packages[1]
         self.assertEqual(2, len(packages))
-        self.assertIn('https://s3.us-east-2.amazonaws.com/your-bucket-name/x-y-z-0.tar.gz', signed_url)
+        self.assertIn('x-y-z-0.tar.gz', url)
         self.assertEqual('x-y-z-0.tar.gz', package_name)
-        self.assertIn('https://s3.us-east-2.amazonaws.com/your-bucket-name/x.y.z-1.tar.gz', signed_url1)
+        self.assertIn('x.y.z-1.tar.gz', url1)
         self.assertEqual('x.y.z-1.tar.gz', package_name1)
 
     def test_list_packages_by_name_pip7_name_spaced_package(self):
         packages = list_packages_by_name(self.dynamodb, 'x.y.z')
-        signed_url, package_name = packages[0]
-        signed_url1, package_name1 = packages[1]
+        url, package_name = packages[0]
+        url1, package_name1 = packages[1]
         self.assertEqual(2, len(packages))
-        self.assertIn('https://s3.us-east-2.amazonaws.com/your-bucket-name/x-y-z-0.tar.gz', signed_url)
+        self.assertIn('x-y-z-0.tar.gz', url)
         self.assertEqual('x-y-z-0.tar.gz', package_name)
-        self.assertIn('https://s3.us-east-2.amazonaws.com/your-bucket-name/x.y.z-1.tar.gz', signed_url1)
+        self.assertIn('x.y.z-1.tar.gz', url1)
         self.assertEqual('x.y.z-1.tar.gz', package_name1)
 
     def test_record_deleted_when_delete_events_occur(self):

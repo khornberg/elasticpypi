@@ -52,7 +52,6 @@ class ElasticPypiTests(TestCase):
             }
         ])
         response = self.client.get('/simple/x/', headers=self.headers)
-        # Remove signed url since it changes
-        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data.decode())
+        # html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data.decode())
         self.assert200(response)
-        self.assertEqual(html, fixtures.links_html)
+        self.assertEqual(response.data.decode(), fixtures.links_html)

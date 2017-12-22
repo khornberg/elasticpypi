@@ -1,6 +1,5 @@
 from boto3.dynamodb.conditions import Key
 from elasticpypi import name
-from elasticpypi import s3
 from elasticpypi.config import config
 
 TABLE = config['table']
@@ -26,5 +25,5 @@ def list_packages_by_name(dynamodb, package_name):
         ScanIndexForward=False,
     )
     sorted_packages = sorted(dynamodb_packages['Items'], key=lambda k: k['filename'])
-    packages = [(s3.signed_url(package['filename']), package['filename']) for package in sorted_packages]
+    packages = [(package['filename'], package['filename']) for package in sorted_packages]
     return packages
