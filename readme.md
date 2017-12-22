@@ -26,7 +26,7 @@ service: elasticpypi
 
 provider:
   name: aws
-  runtime: python2.7
+  runtime: python3.6
   memorySize: 128
   stage: dev
   # profile: "some-local-aws-config-profile"
@@ -83,12 +83,9 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         -v $(pwd):/code \
         elasticpypi-test
 
-# Todo
-
-1. Proxy for packages not found
-1. Token auth of some kind for browsing in a browser
-
 # Changelog
+
+* *2017-12-22* Use Python 3
 
 * *2017-03-24* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as environment variables. If you are upgrading from an older version, you may need to migrate your configuration to serverless.yml.
 
