@@ -1,3 +1,4 @@
+import pytest
 from unittest import TestCase
 from elasticpypi.dynamodb import list_packages_by_name
 from elasticpypi.handler import s3
@@ -59,9 +60,9 @@ class ElasticPypiDynamodbTests(TestCase):
         s3(delete_event, None)
         self.assertFalse(self.table.get_item(Key={'package_name': 'z', 'version': '0'}).get('Item'))
 
-    def test_record_created_when_put_events_occur(self):
+    def test_record_created_with_url_quoted_file_names(self):
         self.assertFalse(self.table.get_item(Key={'package_name': 'a b-0.tar.gz', 'version': '0'}).get('Item'))
-        s3(put_event, None)
+        s3(put_event(), None)
         item = self.table.get_item(Key={'package_name': 'a b-0.tar.gz', 'version': '0'}).get('Item')
         self.assertEqual(
             {
@@ -69,6 +70,30 @@ class ElasticPypiDynamodbTests(TestCase):
                 'version': '0',
                 'package_name': 'a b-0.tar.gz',
                 'filename': 'a b-0.tar.gz'
+            }, item
+        )
+
+    def test_record_created_for_various_package_suffices(self):
+        self.assertFalse(self.table.get_item(Key={'package_name': 'a-0.zip', 'version': '0'}).get('Item'))
+        s3(put_event(package_name='a-0.zip'), None)
+        item = self.table.get_item(Key={'package_name': 'a-0.zip', 'version': '0'}).get('Item')
+        self.assertEqual(
+            {
+                'normalized_name': 'a',
+                'version': '0',
+                'package_name': 'a-0.zip',
+                'filename': 'a-0.zip'
+            }, item
+        )
+        self.assertFalse(self.table.get_item(Key={'package_name': 'a-0.tar.bz3', 'version': '0'}).get('Item'))
+        s3(put_event(package_name='a-0.tar.bz3'), None)
+        item = self.table.get_item(Key={'package_name': 'a-0.tar.bz3', 'version': '0'}).get('Item')
+        self.assertEqual(
+            {
+                'normalized_name': 'a',
+                'version': '0',
+                'package_name': 'a-0.tar.bz3',
+                'filename': 'a-0.tar.bz3'
             }, item
         )
 
