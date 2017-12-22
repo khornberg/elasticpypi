@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "serverless": "^1.1.0",
-    "serverless-wsgi": "^1.0.0"
+    "serverless-wsgi": "^1.4.3"
   },
   "name": "elasticpypi",
   "description": "elastic pypi",
