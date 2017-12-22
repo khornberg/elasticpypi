@@ -1,4 +1,3 @@
-import re
 from flask_testing import TestCase
 from base64 import b64encode
 from elasticpypi.api import app
@@ -52,6 +51,5 @@ class ElasticPypiTests(TestCase):
             }
         ])
         response = self.client.get('/simple/x/', headers=self.headers)
-        html = re.sub("href=\"https://.*\"", "href=\"https://\"", response.data.decode())  # Remove signed url since it changes
         self.assert200(response)
-        self.assertEqual(html, fixtures.links_html)
+        self.assertEqual(response.data.decode(), fixtures.links_html)

@@ -1,6 +1,6 @@
 import os
 
-WATCHED=[
+WATCHED = [
     'SERVICE',
     'STAGE',
     'BUCKET',

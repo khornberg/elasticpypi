@@ -29,13 +29,20 @@ class SimpleTests(TestCase):
     def test_get_simple_200_from_dynamodb(self):
         mock_dynamodb_table.make_table(items=[
             {
-                'package_name': 'z',
+                'package_name': 'z.zip',
+                'normalized_name': 'z',
                 'version': '0'
             }, {
-                'package_name': 'y',
+                'package_name': 'y-0.zip',
+                'normalized_name': 'y',
                 'version': '0'
             }, {
-                'package_name': 'x',
+                'package_name': 'y-1.zip',
+                'normalized_name': 'y',
+                'version': '1'
+            }, {
+                'package_name': 'x.zip',
+                'normalized_name': 'x',
                 'version': '0'
             }
         ])

@@ -18,6 +18,8 @@ provider:
 
 plugins:
   - serverless-wsgi
+  - serverless-apigw-binary
+  - serverless-apigwy-binary
 
 package:
   exclude:
@@ -47,6 +49,7 @@ functions:
           path: packages/{name}
           method: get
           integration: lambda-proxy
+          contentHandling: CONVERT_TO_BINARY
   s3:
     handler: elasticpypi.handler.s3
     events:
@@ -60,6 +63,13 @@ functions:
 custom:
   wsgi:
     app: elasticpypi.api.app
+  apigwBinary:
+    types:
+      - '*/*'
+      - 'application/x-tar'
+      - 'application/x-bzip'
+      - 'application/zip'
+      - 'application/x-gzip'
 
 resources:
   Resources:
