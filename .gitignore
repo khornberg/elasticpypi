@@ -1,6 +1,7 @@
 .idea/
 .cache/
 .serverless/
+.requirements/
 __pycache__/
 *.pyc
 node_modules/
