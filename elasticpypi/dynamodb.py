@@ -8,10 +8,10 @@ TABLE = config['table']
 
 def list_packages(dynamodb):
     table = dynamodb.Table(TABLE)
-    dynamodb_packages = table.scan(ProjectionExpression='package_name')
+    dynamodb_packages = table.scan(ProjectionExpression='normalized_name')
     package_set = set()
     for package in dynamodb_packages['Items']:
-        package_set.add(package['package_name'])
+        package_set.add(package['normalized_name'])
     packages = [(package, package) for package in sorted(package_set)]
     return packages
 
