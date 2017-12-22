@@ -1,4 +1,3 @@
-import pytest
 from unittest import TestCase
 from elasticpypi.dynamodb import list_packages_by_name
 from elasticpypi.handler import s3

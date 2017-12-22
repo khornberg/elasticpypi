@@ -6,3 +6,4 @@ install:
   - pip install -r test-requirements.txt
 script:
   - python -m pytest
+  - flake8 --max-complexity=6 --exclude node_modules
