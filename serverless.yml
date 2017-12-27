@@ -15,6 +15,7 @@ provider:
     TABLE: 'elasticpypi'
     USERNAME: 'elasticpypi'
     PASSWORD: 'something-secretive'   # CHANGE ME
+    OVERWRITE: false
 
 plugins:
   - serverless-wsgi
@@ -138,6 +139,12 @@ resources:
           Statement:
             - Effect: Allow
               Action: s3:GetObject
+              Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
+            - Effect: Allow
+              Action: s3:ListBucket
+              Resource: arn:aws:s3:::${self:provider.environment.BUCKET}
+            - Effect: Allow
+              Action: s3:PutObject
               Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
         Roles:
           - Ref: IamRoleLambdaExecution
