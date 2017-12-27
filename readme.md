@@ -1,13 +1,9 @@
 elastic pypi
 ------------
 
-A *mostly* functional simple pypi service running on AWS.
+A fully functional, self-hosted  simple pypi service running on AWS.
 
 # Caveats
-
-**`python setup.py sdist` does not work**
-
-This is a limitation of AWS API Gateway. There are numerous other ways to upload your packages to the S3 bucket.
 
 **Cannot browse with a browser**
 
@@ -39,6 +35,7 @@ provider:
     TABLE: "elasticpypi"              # You can change me if you want, but do you?
     USERNAME: "elasticpypi"           # You can change me if you want, but do you?
     PASSWORD: "something-secretive"   # CHANGE ME
+    OVERWRITE: false                  # Allow uploads to overwrite already existing packages
 ```
 
 # Deploy
@@ -84,6 +81,8 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         elasticpypi-test
 
 # Changelog
+
+* 2017-12-27 Uploads work. Manually tested with `python setup.py upload` and `twine upload`
 
 * *2017-12-22* Use Python 3, downloads go through the API Gateway so pip's caching now works
 
