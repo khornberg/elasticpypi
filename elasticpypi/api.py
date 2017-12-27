@@ -17,7 +17,7 @@ def simple():
     return render_template('simple.html', prefixes=prefixes, stage=config['stage'])
 
 
-@app.route("/simple/<name>/")
+@app.route('/simple/<name>/')
 @requires_auth
 def simple_name(name):
     db = boto3.resource('dynamodb')
@@ -25,7 +25,7 @@ def simple_name(name):
     return render_template('links.html', packages=packages, package=name, stage=config['stage'])
 
 
-@app.route("/packages/<name>")
+@app.route('/packages/<name>')
 @requires_auth
 def packages_name(name):
     fp = s3.download(name)

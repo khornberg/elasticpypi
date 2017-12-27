@@ -5,16 +5,16 @@ provider:
   runtime: python3.6
   memorySize: 128
   stage: dev
-  # profile: "some-local-aws-config-profile"
+  # profile: 'some-local-aws-config-profile'
   # region: us-east-1
 
   environment:
     SERVICE: ${self:service}
-    STAGE: "/${self:provider.stage}"
-    BUCKET: "elasticpypi"             # CHANGE ME
-    TABLE: "elasticpypi"
-    USERNAME: "elasticpypi"
-    PASSWORD: "something-secretive"   # CHANGE ME
+    STAGE: '/${self:provider.stage}'
+    BUCKET: 'elasticpypi'             # CHANGE ME
+    TABLE: 'elasticpypi'
+    USERNAME: 'elasticpypi'
+    PASSWORD: 'something-secretive'   # CHANGE ME
 
 plugins:
   - serverless-wsgi
@@ -79,27 +79,27 @@ resources:
         TableName: ${self:provider.environment.TABLE}
         AttributeDefinitions:
           -
-            AttributeName: "package_name"
+            AttributeName: 'package_name'
             AttributeType: S
           -
-            AttributeName: "version"
+            AttributeName: 'version'
             AttributeType: S
           -
-            AttributeName: "normalized_name"
+            AttributeName: 'normalized_name'
             AttributeType: S
         KeySchema:
           -
-            AttributeName: "package_name"
+            AttributeName: 'package_name'
             KeyType: HASH
           -
-            AttributeName: "version"
+            AttributeName: 'version'
             KeyType: RANGE
         GlobalSecondaryIndexes:
           -
-            IndexName: "normalized_name-index"
+            IndexName: 'normalized_name-index'
             KeySchema:
               -
-                AttributeName: "normalized_name"
+                AttributeName: 'normalized_name'
                 KeyType: HASH
             Projection:
                 ProjectionType: ALL
