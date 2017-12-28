@@ -9,7 +9,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - python -m pytest --cov=elasticpypi
+  - python -m pytest --cov=elasticpypi --cov-report=term-missing --cov-report=xml
   - flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements
 after_script:
   - ./cc-test-reporter after-build --coverage-input-type coverage.py --exit-code $TRAVIS_TEST_RESULT
