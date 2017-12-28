@@ -5,5 +5,5 @@ install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
 script:
-  - python -m pytest
+  - python -m pytest --cov=elasticpypi
   - flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements
