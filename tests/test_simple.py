@@ -23,10 +23,6 @@ class SimpleTests(TestCase):
         basic_hash = '{0}:{1}'.format(username, password)
         self.headers = {'Authorization': 'Basic ' + b64encode(basic_hash.encode('utf-8')).decode()}
 
-    def test_get_simple_401(self):
-        response = self.client.get('/simple/')
-        self.assert401(response)
-
     @mock_dynamodb2
     def test_get_simple_200_from_dynamodb(self):
         mock_dynamodb_table.make_table(items=[
@@ -51,10 +47,6 @@ class SimpleTests(TestCase):
         response = self.client.get('/simple/', headers=self.headers)
         self.assert200(response)
         self.assertEqual(response.data.decode(), fixtures.simple_html)
-
-    def test_post_simple_401(self):
-        response = self.client.post('/simple/')
-        self.assert401(response)
 
     @mock.patch('elasticpypi.s3.exists')
     @mock.patch('elasticpypi.s3.upload')

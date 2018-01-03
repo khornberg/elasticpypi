@@ -38,19 +38,23 @@ functions:
           path: simple
           method: get
           integration: lambda-proxy
+          authorizer:
+            name: authorizer
+            type: request
       - http:
           path: simple
           method: post
           integration: lambda-proxy
+          authorizer:
+            name: authorizer
+            type: request
       - http:
           path: simple/{name}
           method: get
           integration: lambda-proxy
-      - http:
-          path: packages/{name}
-          method: get
-          integration: lambda-proxy
-          contentHandling: CONVERT_TO_BINARY
+          authorizer:
+            name: authorizer
+            type: request
   s3:
     handler: elasticpypi.handler.s3
     events:
@@ -60,6 +64,8 @@ functions:
       - s3:
           bucket: ${self:provider.environment.BUCKET}
           event: s3:ObjectCreated:*
+  authorizer:
+    handler: elasticpypi.handler.auth
 
 custom:
   wsgi:
