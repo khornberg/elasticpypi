@@ -20,7 +20,6 @@ provider:
 plugins:
   - serverless-wsgi
   - serverless-apigw-binary
-  - serverless-apigwy-binary
 
 package:
   exclude:
@@ -154,3 +153,94 @@ resources:
               Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
         Roles:
           - Ref: IamRoleLambdaExecution
+    ApiGatewayS3IamRoleExecution:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "apigateway.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+        Path: /
+    ApiGatewayS3IamPolicy:
+      Type: AWS::IAM::Policy
+      DependsOn: ApiGatewayS3IamRoleExecution
+      Properties:
+        PolicyName: ${self:service}-api_gateway-s3
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: s3:GetObject
+              Resource: arn:aws:s3:::${self:provider.environment.BUCKET}/*
+            - Effect: Allow
+              Action: s3:ListBucket
+              Resource: arn:aws:s3:::${self:provider.environment.BUCKET}
+        Roles:
+          - Ref: ApiGatewayS3IamRoleExecution
+    Packages:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId:
+          Fn::GetAtt:
+            - ApiGatewayRestApi
+            - RootResourceId
+        PathPart: packages
+        RestApiId:
+          Ref: ApiGatewayRestApi
+    PackagesName:
+      Type: AWS::ApiGateway::Resource
+      DependsOn: Packages
+      Properties:
+        ParentId:
+          Ref: Packages
+        PathPart: "{name}"
+        RestApiId:
+          Ref: ApiGatewayRestApi
+    PackagesNameMethod:
+      Type: AWS::ApiGateway::Method
+      DependsOn:
+        - PackagesName
+        - ApiGatewayS3IamPolicy
+      Properties:
+        AuthorizationType: "CUSTOM"
+        AuthorizerId:
+          Ref: AuthorizerApiGatewayAuthorizer
+        ResourceId:
+          Ref: PackagesName
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        HttpMethod: GET
+        MethodResponses:
+          -
+            StatusCode: 200
+            ResponseParameters:
+              method.response.header.TimeStamp: true
+              method.response.header.Content-Length: true
+              method.response.header.Content-Type: true
+        RequestParameters:
+          method.request.path.name: true
+        Integration:
+          IntegrationHttpMethod: GET
+          Type: AWS
+          Uri: arn:aws:apigateway:${self:provider.region}:s3:path/${self:provider.environment.BUCKET}/{key}
+          Credentials:
+            Fn::GetAtt:
+              - ApiGatewayS3IamRoleExecution
+              - Arn
+          IntegrationResponses:
+            -
+              StatusCode: 200
+              ResponseParameters:
+                method.response.header.TimeStamp: integration.response.header.Date
+                method.response.header.Content-Length: integration.response.header.Content-Length
+                method.response.header.Content-Type: integration.response.header.Content-Type
+          RequestParameters:
+            integration.request.path.key: method.request.path.name
