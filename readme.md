@@ -9,6 +9,19 @@ A fully functional, self-hosted  simple pypi service running on AWS.
 
 This is a limitation of current browsers. They have removed basic authentication for remote urls via the url (e.g. x:y@z). `WWW-Authenticate` responses do not work with AWS Lambda.
 
+**Uploads through the api are limited to 6MB**
+
+Uploads are limited to 6MB through the API because Lambda limits the body size. https://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list
+
+Uploads directly to the S3 bucket are limited by whatever S3 does.
+
+Only uploads through the API are checked for and discriminated by the `overwrite` configuration setting.
+
+**Downloads are limited to 10MB**
+
+This again is a limitation of AWS; specifically API Gateway.
+https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#api-gateway-limits
+
 # Setup
 
 1. Edit `serverless.yml`
@@ -81,6 +94,8 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         elasticpypi-test
 
 # Changelog
+
+* 2018-01-04 Downloads up to 10 MB work without signed requests
 
 * 2017-12-27 Uploads work. Manually tested with `python setup.py upload` and `twine upload`
 
