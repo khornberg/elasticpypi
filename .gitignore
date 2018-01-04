@@ -6,3 +6,6 @@ __pycache__/
 *.pyc
 node_modules/
 elasticpypi/config.json
+
+yarn.lock
+package-lock.json
