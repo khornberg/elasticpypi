@@ -1,7 +1,9 @@
 import boto3
 import urllib
+from basicauth import decode
 from elasticpypi.name import compute_package_name, normalize, compute_version
 from elasticpypi.config import config
+from elasticpypi.auth import AuthPolicy
 
 TABLE = config['table']
 
@@ -38,3 +40,20 @@ def put_item(version, filename, normalized_name, table):
             'normalized_name': urllib.parse.unquote_plus(normalized_name),
         }
     )
+
+
+def auth(event, context):
+    user, pwd = decode(event['headers']['Authorization'])
+    if user != config['username'] or pwd != config['password']:
+        raise Exception('Unauthorized')
+    principalId = user
+    tmp = event['methodArn'].split(':')
+    apiGatewayArnTmp = tmp[5].split('/')
+    awsAccountId = tmp[4]
+    policy = AuthPolicy(principalId, awsAccountId)
+    policy.restApiId = apiGatewayArnTmp[0]
+    policy.region = tmp[3]
+    policy.stage = apiGatewayArnTmp[1]
+    policy.allowAllMethods()
+    authResponse = policy.build()
+    return authResponse

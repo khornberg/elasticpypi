@@ -21,10 +21,6 @@ class ElasticPypiTests(TestCase):
         basic_hash = '{0}:{1}'.format(username, password)
         self.headers = {'Authorization': 'Basic ' + b64encode(basic_hash.encode('utf-8')).decode()}
 
-    def test_get_simple_x_401(self):
-        response = self.client.get('/simple/x/')
-        self.assert401(response)
-
     @mock_dynamodb2
     def test_get_simple_x_200_from_dynamodb(self):
         mock_dynamodb_table.make_table([

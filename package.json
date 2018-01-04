@@ -2,7 +2,6 @@
   "dependencies": {
     "serverless": "^1.25.0",
     "serverless-apigw-binary": "^0.4.4",
-    "serverless-apigwy-binary": "^0.1.0",
     "serverless-wsgi": "^1.4.3"
   },
   "name": "elasticpypi",
