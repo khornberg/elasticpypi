@@ -15,8 +15,7 @@ def simple():
         f = request.files['content']
         if '/' in f.filename:
             abort(400)
-        print(config)
-        if config['overwrite'] == 'false' and s3.exists(f.filename):
+        if config['overwrite'] == 'false' and dynamodb.exists(f.filename):
             abort(409)
         s3.upload(f.filename, f.stream)
         return '', 200

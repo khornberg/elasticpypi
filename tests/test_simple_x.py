@@ -1,5 +1,4 @@
 from flask_testing import TestCase
-from base64 import b64encode
 from elasticpypi.api import app
 from elasticpypi.config import config
 from tests import fixtures
@@ -14,12 +13,6 @@ class ElasticPypiTests(TestCase):
     def create_app(self):
         app.config['TESTING'] = True
         return app
-
-    def setUp(self):
-        password = config['password']
-        username = config['username']
-        basic_hash = '{0}:{1}'.format(username, password)
-        self.headers = {'Authorization': 'Basic ' + b64encode(basic_hash.encode('utf-8')).decode()}
 
     @mock_dynamodb2
     def test_get_simple_x_200_from_dynamodb(self):
@@ -46,6 +39,6 @@ class ElasticPypiTests(TestCase):
                 'filename': 'x-1.tar.gz'
             }
         ])
-        response = self.client.get('/simple/x/', headers=self.headers)
+        response = self.client.get('/simple/x/')
         self.assert200(response)
         self.assertEqual(response.data.decode(), fixtures.links_html)
