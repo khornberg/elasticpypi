@@ -150,7 +150,7 @@ def typicalRequest(password=None):
             "origin": "https://j3ap25j034.execute-api.eu-west-2.amazonaws.com",
             "Referer": "https://j3ap25j034.execute-api.eu-west-2.amazonaws.com/dev/",
             "upgrade-insecure-requests": "1",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
+            "User-Agent": "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
             "Via": "2.0 a3650115c5e21e2b5d133ce84464bea3.cloudfront.net (CloudFront)",
             "X-Amz-Cf-Id": "0nDeiXnReyHYCkv8cc150MWCFCLFPbJoTs1mexDuKe2WJwK5ANgv2A==",
             "X-Amzn-Trace-Id": "Root=1-597079de-75fec8453f6fd4812414a4cd",
@@ -178,7 +178,7 @@ def typicalRequest(password=None):
                 "cognitoAuthenticationType": None,
                 "cognitoAuthenticationProvider": None,
                 "userArn": None,
-                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
+                "userAgent": "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36",
                 "user": None
             },
             "resourcePath": "/",

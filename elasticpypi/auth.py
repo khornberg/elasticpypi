@@ -1,4 +1,4 @@
-# modified from https://github.com/awslabs/aws-apigateway-lambda-authorizer-blueprints/blob/master/blueprints/python/api-gateway-authorizer-python.py
+# modified from https://github.com/awslabs/aws-apigateway-lambda-authorizer-blueprints/blob/master/blueprints/python/api-gateway-authorizer-python.py # noqa E501
 import re
 
 
@@ -39,7 +39,9 @@ class AuthPolicy(object):
 
         if resource[:1] == '/':
             resource = resource[1:]
-        resourceArn = 'arn:aws:execute-api:{}:{}:{}/{}/{}/{}'.format(self.region, self.awsAccountId, self.restApiId, self.stage, verb, resource)
+        resourceArn = 'arn:aws:execute-api:{}:{}:{}/{}/{}/{}'.format(
+            self.region, self.awsAccountId, self.restApiId, self.stage, verb, resource
+        )
         if effect.lower() == 'allow':
             self.allowMethods.append({
                 'resourceArn': resourceArn,
