@@ -55,7 +55,7 @@ def exists(filename):
     db = boto3.resource('dynamodb')
     table = db.Table(TABLE)
     dynamodb_packages = table.query(
-        KeyConditionExpression=Key('filename').eq(filename),
+        KeyConditionExpression=Key('package_name').eq(filename),
         ProjectionExpression='filename',
         ScanIndexForward=False,
     )
