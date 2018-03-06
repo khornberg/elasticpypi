@@ -1,6 +1,6 @@
 mock==2.0.0
 Flask-Testing==0.7.1
-pytest==3.4.0
+pytest==3.4.1
 moto==1.2.0
 boto==2.48.0
 boto3==1.6.3
