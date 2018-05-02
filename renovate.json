@@ -4,5 +4,9 @@
   ],
   "pip_requirements": {
     "enabled": true
+  },
+  "automerge": true,
+  "major": {
+    "automerge": false
   }
 }
