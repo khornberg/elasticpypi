@@ -1,4 +1,4 @@
-FROM python:2@sha256:6d2016499edaedd0f7aa8a20aef2e305f75592b3ed6b79301578a4a8b1a91df3
+FROM python:2@sha256:8907ce99826e948f535e9e2524225a8c5b2d273f2b223c7fe7d82e1fb41efdc3
 MAINTAINER Shaun Martin <shaun@samsite.ca>
 
 VOLUME /code
