@@ -5,6 +5,8 @@ simple_html = '<html>\n  <head>\n    <title>Simple Index</title>\n  </head>\n  <
 
 links_html = '<html>\n  <head>\n  <title>Links for x</title>\n  </head>\n  <body>\n    <h1>Links for x</h1>\n    \n    <a href="/dev/packages/x-0.tar.gz">x-0.tar.gz</a></br>\n    \n    <a href="/dev/packages/x-1.tar.gz">x-1.tar.gz</a></br>\n    \n  </body>\n</html>'  # noqa [E501]
 
+wheel_links_html = '<html>\n  <head>\n  <title>Links for curses</title>\n  </head>\n  <body>\n    <h1>Links for curses</h1>\n    \n    <a href="/dev/packages/curses-2.2-cp36-cp36m-win_amd64.whl">curses-2.2-cp36-cp36m-win_amd64.whl</a></br>\n    \n  </body>\n</html>'  # noqa [E501]
+
 
 def put_event(package_name='a+b-0.tar.gz'):
     return {
