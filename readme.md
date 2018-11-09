@@ -5,9 +5,9 @@ A fully functional, self-hosted  simple pypi service running on AWS.
 
 # Caveats
 
-**Cannot browse with a browser**
+**Browse with a browser**
 
-This is a limitation of current browsers. They have removed basic authentication for remote urls via the url (e.g. x:y@z). `WWW-Authenticate` responses do not work with AWS Lambda.
+This is a limitation of current browsers. They have removed basic authentication for remote urls via the url (e.g. x:y@z). However, if you visit the URL directly, browser will promote you to enter username and password, or you can install this [plugin](https://chrome.google.com/webstore/detail/multipass-for-http-basic/enhldmjbphoeibbpdhmjkchohnidgnah) for Chrome and setup the credentials accordingly.
 
 **Uploads through the api are limited to 6MB**
 

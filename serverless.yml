@@ -39,6 +39,8 @@ functions:
           integration: lambda-proxy
           authorizer:
             name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
             type: request
       - http:
           path: simple
@@ -46,6 +48,8 @@ functions:
           integration: lambda-proxy
           authorizer:
             name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
             type: request
       - http:
           path: simple/{name}
@@ -53,6 +57,8 @@ functions:
           integration: lambda-proxy
           authorizer:
             name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
             type: request
   s3:
     handler: elasticpypi.handler.s3
@@ -79,6 +85,15 @@ custom:
 
 resources:
   Resources:
+    GatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.WWW-Authenticate: "'Basic'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
     packagesTable:
       Type: AWS::DynamoDB::Table
       Properties:
