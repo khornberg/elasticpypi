@@ -17,7 +17,7 @@ class AuthPolicy(object):
     awsAccountId = ''
     principalId = ''
     version = '2012-10-17'
-    pathRegex = '^[/.a-zA-Z0-9-\*]+$'
+    pathRegex = '^[/.a-zA-Z0-9-*]+$'
     allowMethods = []
     denyMethods = []
     restApiId = '*'
