@@ -94,6 +94,7 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         elasticpypi-test
 
 # Changelog
+* 2018-11-26 HTTP Basic Authentication works for in browser browsing
 
 * 2018-01-04 Downloads up to 10 MB work without signed requests
 
