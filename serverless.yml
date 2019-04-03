@@ -11,10 +11,10 @@ provider:
   environment:
     SERVICE: ${self:service}
     STAGE: '/${self:provider.stage}'
-    BUCKET: 'elasticpypi'             # CHANGE ME
+    BUCKET: 'pypi-internal'             # CHANGE ME
     TABLE: 'elasticpypi'
-    USERNAME: 'elasticpypi'
-    PASSWORD: 'something-secretive'   # CHANGE ME
+    USERNAME: 'pypi'
+    PASSWORD: 'inventorum'   # CHANGE ME
     OVERWRITE: false
 
 plugins:
