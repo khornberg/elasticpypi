@@ -2,11 +2,11 @@ service: elasticpypi
 
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   memorySize: 128
   stage: dev
   # profile: 'some-local-aws-config-profile'
-  # region: us-east-1
+  region: eu-central-1
 
   environment:
     SERVICE: ${self:service}
@@ -20,6 +20,7 @@ provider:
 plugins:
   - serverless-wsgi
   - serverless-apigw-binary
+  - serverless-domain-manager
 
 package:
   exclude:
@@ -31,7 +32,7 @@ package:
 
 functions:
   api:
-    handler: wsgi.handler
+    handler: wsgi_handler.handler
     events:
       - http:
           path: simple
@@ -82,6 +83,14 @@ custom:
       - 'application/x-bzip'
       - 'application/zip'
       - 'application/x-gzip'
+  customDomain:
+    domainName: pypi.inventorum.berlin
+    basePath: ''
+    stage: ${self:provider.stage}
+    certificate: '*.inventorum.berlin'
+    createRoute53Record: true
+    endpointType: 'regional'
+
 
 resources:
   Resources:
