@@ -1,6 +1,6 @@
 workflow "Build and Test" {
   on = "push"
-  resolves = [ "Report" ]
+  resolves = [ "Report", "Lint" ]
 }
 
 action "Curl" {
@@ -23,7 +23,7 @@ action "Build" {
 
 action "Lint" {
   uses = "jefftriplett/python-actions@master"
-  args = "flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements > .flake8 && cat .flake8"
+  args = "flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv"
   needs = ["Build"]
 }
 
