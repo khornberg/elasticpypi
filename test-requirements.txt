@@ -3,7 +3,7 @@ Flask-Testing==0.7.1
 pytest==4.4.1
 moto==1.3.6
 boto==2.49.0
-boto3==1.9.133
+boto3==1.9.134
 pytest-env==0.6.2
 flake8==3.7.7
 pytest-cov==2.6.1
