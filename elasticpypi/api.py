@@ -3,8 +3,10 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import abort
+from flask import jsonify
 from elasticpypi import s3, dynamodb
 from elasticpypi.config import config
+from elasticpypi.package import Package
 
 app = Flask(__name__)
 
@@ -29,3 +31,12 @@ def simple_name(name):
     db = boto3.resource('dynamodb')
     packages = dynamodb.list_packages_by_name(db, name)
     return render_template('links.html', packages=packages, package=name, stage=config['stage'])
+
+
+@app.route('/pypi/<project_name>/json')
+def project_name(project_name):
+    if request.content_type != 'application/json':
+        return abort(415)
+    db = boto3.resource('dynamodb')
+    packages = dynamodb.get_packages(db, project_name, 'filename, version')
+    return jsonify(Package(name=project_name, packages=packages, stage=config['stage']).serialize())

@@ -60,3 +60,17 @@ def exists(filename):
         ScanIndexForward=False,
     )
     return dynamodb_packages.get('Count', 0)
+
+
+def get_packages(dynamodb, package_name, fields, sort_key=False):
+    _name = name.normalize(package_name)
+    table = dynamodb.Table(TABLE)
+    dynamodb_packages = table.query(
+        IndexName='normalized_name-index',
+        KeyConditionExpression=Key('normalized_name').eq(_name),
+        ProjectionExpression=fields,
+        ScanIndexForward=False,
+    )
+    if sort_key:
+        return sorted(dynamodb_packages['Items'], key=lambda k: k[sort_key])
+    return dynamodb_packages
