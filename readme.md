@@ -6,8 +6,7 @@ A fully functional, self-hosted  simple pypi service running on AWS.
 # Caveats
 
 **Browse with a browser**
-
-This is a limitation of current browsers. They have removed basic authentication for remote urls via the url (e.g. x:y@z). However, if you visit the URL directly, browser will promote you to enter username and password, or you can install this [plugin](https://chrome.google.com/webstore/detail/multipass-for-http-basic/enhldmjbphoeibbpdhmjkchohnidgnah) for Chrome and setup the credentials accordingly.
+Browsers are currently limited by the removal of basic authentication for remote URLs via the URL (e.g. x:y@z). However, if you visit the URL directly, the browser will prompt you to either enter a username and password, or install this [plugin](https://chrome.google.com/webstore/detail/multipass-for-http-basic/enhldmjbphoeibbpdhmjkchohnidgnah) for Chrome and setup the credentials accordingly.
 
 **Uploads through the api are limited to 6MB**
 
@@ -73,7 +72,7 @@ Make sure you add your basic authentication credentials to your url.
 
 ## Throttling
 
-AWS resources maybe throttled. As such, if you are intending to dump a bunch of packages into the S3 bucket check your
+AWS resources could be throttled. As such, if you are intending to dump a bunch of packages into the S3 bucket, please check your
 service and account limits. Additionally, changing the read and write capacity of dynamodb may help. It is currently set
 to the lowest possible unit (1).
 
