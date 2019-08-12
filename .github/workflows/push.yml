@@ -2,7 +2,9 @@ on:
   push:
     branches:
       - !master
-      - *
+  pull-request:
+    branches:
+      - refs/pull/*
 name: Build and Test
 jobs:
   build:
