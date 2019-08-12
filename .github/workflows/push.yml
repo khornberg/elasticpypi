@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - !master
+      - refs/pull/*
 name: Build and Test
 jobs:
   build:
@@ -35,9 +36,8 @@ jobs:
       run: |
         python -m pytest --cov=elasticpypi --cov-report=term-missing --cov-report=xml
     - name: Lint
-      uses: jefftriplett/python-actions@master
-      with:
-        args: flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv
+      run: |
+        flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv
     - name: Report
       uses: actions/bin/sh@master
       env:
