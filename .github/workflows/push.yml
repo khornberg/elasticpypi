@@ -1,7 +1,4 @@
-on:
-  push:
-    branches:
-      - !master
+on: [push, pull-request]
 name: Build and Test
 jobs:
   build:
@@ -17,16 +14,13 @@ jobs:
       with:
         version: ${{ matrix.python-version }}
     - name: Curl
-      uses: actions/bin/curl@master
-      with:
-        args: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-          > ./cc-test-reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - name: Prepare
-      uses: actions/bin/sh@master
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      with:
-        args: '"chmod +x ./cc-test-reporter && ./cc-test-reporter before-build"'
+      run: |
+        chmod +x ./cc-test-reporter && ./cc-test-reporter before-build
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
@@ -35,13 +29,10 @@ jobs:
       run: |
         python -m pytest --cov=elasticpypi --cov-report=term-missing --cov-report=xml
     - name: Lint
-      uses: jefftriplett/python-actions@master
-      with:
-        args: flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv
+      run: |
+        flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv
     - name: Report
-      uses: actions/bin/sh@master
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-      with:
-        args: '"apt-get update && apt-get install git-core -y && ./cc-test-reporter
-          after-build --coverage-input-type coverage.py"'
+      run: |
+        ./cc-test-reporter after-build --coverage-input-type coverage.py
