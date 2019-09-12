@@ -84,13 +84,21 @@
 
         <h2 id="configuration">Configuration</h2>
 
-        <p>Edit <code>serverless.yml</code></p>
+        <h3>By CLI</h3>
+
+        <p><pre class="code"><code>
+sls deploy --stage production --bucket my-elasticpypi --password horse-battery-staple
+</code></pre><p>
+
+        <p>See the serverless.yml for all options</p>
+
+        <h3>By <code>serverless.yml</code></h3>
 
         <p><pre class="code" data-lang="yaml"><code>service: elasticpypi
 
 provider:
   name: aws
-  runtime: python2.7
+  runtime: python3.7
   memorySize: 128
   stage: dev
   # profile: "some-local-aws-config-profile"
@@ -112,7 +120,7 @@ provider:
         <h2 id="deploy">Deploy</h2>
         <p><code>sls deploy</code></p>
         <h3>Notes</h3>
-        <p>When deploying do not have the virtualenv activated. The <code>wsgi</code> plugin for serverless will automatically fetch the python requirements.</p>
+        <p>The deploy will automatically fetch the python requirements.</p>
 
         <h3>Using</h3>
 
