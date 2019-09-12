@@ -11,10 +11,10 @@ provider:
   environment:
     SERVICE: ${self:service}
     STAGE: '/${self:provider.stage}'
-    BUCKET: 'elasticpypi'             # CHANGE ME
-    TABLE: 'elasticpypi'
-    USERNAME: 'elasticpypi'
-    PASSWORD: 'something-secretive'   # CHANGE ME
+    BUCKET: ${opt:bucket, 'elasticpypi'}             # CHANGE ME
+    TABLE: ${opt:table, 'elasticpypi'}
+    USERNAME: ${opt:username, 'elasticpypi'}
+    PASSWORD: ${opt:password, 'something-secretive'}   # CHANGE ME
     OVERWRITE: false
 
 plugins:
