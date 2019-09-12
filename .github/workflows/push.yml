@@ -1,4 +1,4 @@
-on: [push, pull-request]
+on: [push]
 name: Build and Test
 jobs:
   build:

@@ -2,7 +2,7 @@ service: elasticpypi
 
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   memorySize: 128
   stage: dev
   # profile: 'some-local-aws-config-profile'
@@ -20,6 +20,7 @@ provider:
 plugins:
   - serverless-wsgi
   - serverless-apigw-binary
+  - serverless-python-requirements
 
 package:
   exclude:
@@ -31,7 +32,7 @@ package:
 
 functions:
   api:
-    handler: wsgi.handler
+    handler: wsgi_handler.handler
     events:
       - http:
           path: simple
