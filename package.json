@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "serverless": "1.60.2",
+    "serverless": "1.60.3",
     "serverless-apigw-binary": "0.4.4",
     "serverless-python-requirements": "5.0.1",
     "serverless-wsgi": "1.7.4"
