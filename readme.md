@@ -1,105 +1,71 @@
-elastic pypi
-------------
+# Elastic PyPI
 
-A fully functional, self-hosted  simple pypi service running on AWS.
+- [Elastic PyPI](#elastic-pypi)
+  - [Fork version differences](#fork-version-differences)
+  - [Usage](#usage)
+    - [Browser repository](#browser-repository)
+    - [Pipfile template](#pipfile-template)
+    - [Upload new packages](#upload-new-packages)
+  - [Deploy](#deploy)
+    - [Throttling](#throttling)
 
-# Caveats
+A fully functional, self-hosted simple pypi service running on AWS.
 
-**Browse with a browser**
-Browsers are currently limited by the removal of basic authentication for remote URLs via the URL (e.g. x:y@z). However, if you visit the URL directly, the browser will prompt you to either enter a username and password, or install this [plugin](https://chrome.google.com/webstore/detail/multipass-for-http-basic/enhldmjbphoeibbpdhmjkchohnidgnah) for Chrome and setup the credentials accordingly.
+## Fork version differences
 
-**Uploads through the api are limited to 6MB**
+- `serverless.yml` has config for AltitudeNetworks
+- Packages download from S3 presigned URLs to remove 10 MB download limit for API Gateway
+- Fixed package links in GUI
+- Missing packages return 404 status code instead of a page with no links
+- Fixed S3 delete trigger
 
-Uploads are limited to 6MB through the API because Lambda limits the body size. https://docs.aws.amazon.com/lambda/latest/dg/limits.html#limits-list
+## Usage
 
-Uploads directly to the S3 bucket are limited by whatever S3 does.
+### Browser repository
 
-Only uploads through the API are checked for and discriminated by the `overwrite` configuration setting.
+- Browse [repository](https://078f54k4k0.execute-api.us-west-2.amazonaws.com/dev/simple/) in browser
+- `pip`, `pipenv` and `poetry` are supported
 
-**Downloads are limited to 10MB**
+### Pipfile template
 
-This again is a limitation of AWS; specifically API Gateway.
-https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#api-gateway-limits
-
-# Setup
-
-1. Edit `serverless.yml`
-
-## Configuration
-
-### serverless.yml
+Add `INTERNAL_PYPI_PASS` env variable to your `~/.bashrc`
 
 ```
-service: elasticpypi
+[[source]]
+name = "internal"
+url = "https://elasticpypi:${INTERNAL_PYPI_PASS}@078f54k4k0.execute-api.us-west-2.amazonaws.com/dev/simple"
+verify_ssl = true
 
-provider:
-  name: aws
-  runtime: python3.6
-  memorySize: 128
-  stage: dev
-  # profile: "some-local-aws-config-profile"
-  # region: us-east-1
+[dev-packages]
+pycodestyle = "*"
 
-  environment:
-    SERVICE: ${self:service}          # See above. Defaults to elasticpypi
-    STAGE: "/${self:provider.stage}"  # See above. Defaults to dev
-    BUCKET: "elasticpypi"             # CHANGE ME
-    TABLE: "elasticpypi"              # You can change me if you want, but do you?
-    USERNAME: "elasticpypi"           # You can change me if you want, but do you?
-    PASSWORD: "something-secretive"   # CHANGE ME
-    OVERWRITE: false                  # Allow uploads to overwrite already existing packages
+[packages]
+my-package = {path = ".",editable = true}
+
+[requires]
+python_version = "3.7"
 ```
 
-# Deploy
+### Upload new packages
 
-`npm`/`yarn` and `pip` are required to install the necessary packages to deploy.
+First, make sure you have [deployment_tools](https://github.com/altitudenetworks/deployment_tools) in your repo.
 
-1. `yarn install`
-2. `yarn run sls deploy --password ${INTERNAL_PYPI_PASS}`
+- To add a new dependency or a dev dependency, use `pypi_upload my_dependency==1.2.3 && pipenv install my_dependency==1.2.3`
+- Upload all requirements for your package `pypi_upload --requirements`
+- Upload new version of your package `pypi_upload --release`
+
+## Deploy
+
+[yarn](https://yarnpkg.com/lang/en/) is required to install the necessary packages to deploy.
+
+- `yarn install`
+- `yarn run sls deploy --password ${INTERNAL_PYPI_PASS}`
 
 
 **Note** that when deploying do not have the virtualenv activated. The `wsgi` plugin for serverless will automatically fetch the python requirements.
 
-# Using
-
-Based on the output of the deploy command or via the AWS console add the url to your pip conf.
-
-The url should be something like `https://blah.execute-api.region.amazonaws.com/dev/simple`.
-
-Make sure you add a trailing slash as required in the PEP.
-
-Make sure you add your basic authentication credentials to your url.
-
-## Throttling
+### Throttling
 
 AWS resources could be throttled. As such, if you are intending to dump a bunch of packages into the S3 bucket, please check your
 service and account limits. Additionally, changing the read and write capacity of dynamodb may help. It is currently set
 to the lowest possible unit (1).
-
-# Testing
-
-## Requirements
-
-1. Install testing requirements from `test-requirements.txt`
-1. Run `python -m pytest`
-
-## Using Docker
-
-The example below runs the full test suite. To debug, add `/bin/bash` to the end of the command.
-
-    $ sudo docker build -t elasticpypi-test .
-    $ sudo docker run -it \
-        -v $(pwd):/code \
-        elasticpypi-test
-
-# Changelog
-* 2018-11-26 HTTP Basic Authentication works for in browser browsing
-
-* 2018-01-04 Downloads up to 10 MB work without signed requests
-
-* 2017-12-27 Uploads work. Manually tested with `python setup.py upload` and `twine upload`
-
-* *2017-12-22* Use Python 3, downloads go through the API Gateway so pip's caching now works
-
-* *2017-03-24* The configuration has moved from `./elasticpypi/config.json` to `./serverless.yml` and is consumed by elasticpypi as environment variables. If you are upgrading from an older version, you may need to migrate your configuration to serverless.yml.
-
