@@ -4,8 +4,6 @@
   - [Fork version differences](#fork-version-differences)
   - [Usage](#usage)
     - [Browser repository](#browser-repository)
-    - [Pipfile template](#pipfile-template)
-    - [Upload new packages](#upload-new-packages)
   - [Deploy](#deploy)
     - [Throttling](#throttling)
 
@@ -23,36 +21,8 @@ A fully functional, self-hosted simple pypi service running on AWS.
 
 ### Browser repository
 
-- Browse [repository](https://078f54k4k0.execute-api.us-west-2.amazonaws.com/dev/simple/) in browser
+- Browse repository in browser
 - `pip`, `pipenv` and `poetry` are supported
-
-### Pipfile template
-
-Add `INTERNAL_PYPI_PASS` env variable to your `~/.bashrc`
-
-```
-[[source]]
-name = "internal"
-url = "https://elasticpypi:${INTERNAL_PYPI_PASS}@078f54k4k0.execute-api.us-west-2.amazonaws.com/dev/simple"
-verify_ssl = true
-
-[dev-packages]
-pycodestyle = "*"
-
-[packages]
-my-package = {path = ".",editable = true}
-
-[requires]
-python_version = "3.7"
-```
-
-### Upload new packages
-
-First, make sure you have [deployment_tools](https://github.com/altitudenetworks/deployment_tools) in your repo.
-
-- To add a new dependency or a dev dependency, use `pypi_upload my_dependency==1.2.3 && pipenv install my_dependency==1.2.3`
-- Upload all requirements for your package `pypi_upload --requirements`
-- Upload new version of your package `pypi_upload --release`
 
 ## Deploy
 
