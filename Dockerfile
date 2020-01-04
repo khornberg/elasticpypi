@@ -1,5 +1,4 @@
 FROM python:3.8
-MAINTAINER Shaun Martin <shaun@samsite.ca>
 
 VOLUME /code
 
