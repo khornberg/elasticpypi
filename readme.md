@@ -29,7 +29,7 @@ A fully functional, self-hosted simple pypi service running on AWS.
 [yarn](https://yarnpkg.com/lang/en/) is required to install the necessary packages to deploy.
 
 - `yarn install`
-- `yarn run sls deploy --password ${INTERNAL_PYPI_PASS}`
+- `yarn run sls deploy --password ${INTERNAL_PYPI_PASS} --bucket altitudenetworks-pypi`
 
 
 **Note** that when deploying do not have the virtualenv activated. The `wsgi` plugin for serverless will automatically fetch the python requirements.

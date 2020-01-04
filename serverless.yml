@@ -11,7 +11,7 @@ provider:
   environment:
     SERVICE: pypi
     STAGE: dev
-    BUCKET: altitudenetworks-pypi
+    BUCKET: ${opt:bucket, 'elasticpypi'}
     TABLE: elasticpypi
     USERNAME: elasticpypi
     PASSWORD: ${opt:password, 'Password123'}
