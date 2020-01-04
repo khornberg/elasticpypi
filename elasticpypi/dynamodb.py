@@ -54,7 +54,7 @@ class DynamoDBClient:
         version = compute_version(filename)
         normalized_name = normalize(package_name)
         data = {
-            "package_name": urllib.parse.unquote_plus(filename),
+            "package_name": urllib.parse.unquote_plus(package_name),
             "version": urllib.parse.unquote_plus(version),
             "filename": urllib.parse.unquote_plus(filename),
             "normalized_name": urllib.parse.unquote_plus(normalized_name),
