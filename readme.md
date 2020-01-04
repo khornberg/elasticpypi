@@ -11,7 +11,6 @@ A fully functional, self-hosted simple pypi service running on AWS.
 
 ## Fork version differences
 
-- `serverless.yml` has config for AltitudeNetworks
 - Packages download from S3 presigned URLs to remove 10 MB download limit for API Gateway
 - Fixed package links in GUI
 - Missing packages return 404 status code instead of a page with no links
