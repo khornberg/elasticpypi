@@ -2,8 +2,6 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import abort
-from flask import jsonify
-from flask import jsonify
 
 from elasticpypi.dynamodb import DynamoDBClient
 from elasticpypi.s3 import S3Client
@@ -36,10 +34,3 @@ def simple_name(name):
     return render_template(
         "links.html", packages=packages, package=name, stage=config["stage"]
     )
-
-
-@app.route("/add/<filename>/")
-def add_package(filename):
-    dynamodb_client = DynamoDBClient()
-    data = dynamodb_client.add_item(filename)
-    return jsonify(data)
