@@ -54,8 +54,8 @@ provider:
 
 `npm`/`yarn` and `pip` are required to install the necessary packages to deploy.
 
-1. `yarn` or `npm install`
-1. `sls deploy`
+1. `yarn install`
+2. `yarn run sls deploy --password ${INTERNAL_PYPI_PASS}`
 
 
 **Note** that when deploying do not have the virtualenv activated. The `wsgi` plugin for serverless will automatically fetch the python requirements.

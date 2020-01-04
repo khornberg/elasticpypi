@@ -5,7 +5,7 @@
   <body>
     <h1>Links for {{ package }}</h1>
     {% for package in packages %}
-    <a href="{{ stage }}/packages/{{ package.0 }}">{{ package.1 }}</a></br>
+    <a href="{{ package.download_url }}">{{ package.filename }}</a></br>
     {% endfor %}
   </body>
 </html>

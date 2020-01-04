@@ -1,21 +1,21 @@
-service: elasticpypi
+service: pypi
 
 provider:
   name: aws
   runtime: python3.7
   memorySize: 128
   stage: dev
-  # profile: 'some-local-aws-config-profile'
-  # region: us-east-1
+  profile: dev
+  region: us-west-2
 
   environment:
-    SERVICE: ${self:service}
-    STAGE: '/${self:provider.stage}'
-    BUCKET: ${opt:bucket, 'elasticpypi'}             # CHANGE ME
-    TABLE: ${opt:table, 'elasticpypi'}
-    USERNAME: ${opt:username, 'elasticpypi'}
-    PASSWORD: ${opt:password, 'something-secretive'}   # CHANGE ME
-    OVERWRITE: false
+    SERVICE: pypi
+    STAGE: dev
+    BUCKET: altitudenetworks-pypi
+    TABLE: elasticpypi
+    USERNAME: elasticpypi
+    PASSWORD: ${opt:password, 'Password123'}
+    OVERWRITE: true
 
 plugins:
   - serverless-wsgi
@@ -78,56 +78,49 @@ custom:
     app: elasticpypi.api.app
   apigwBinary:
     types:
-      - '*/*'
-      - 'application/x-tar'
-      - 'application/x-bzip'
-      - 'application/zip'
-      - 'application/x-gzip'
+      - "*/*"
+      - "application/x-tar"
+      - "application/x-bzip"
+      - "application/zip"
+      - "application/x-gzip"
 
 resources:
   Resources:
     GatewayResponse:
-      Type: 'AWS::ApiGateway::GatewayResponse'
+      Type: "AWS::ApiGateway::GatewayResponse"
       Properties:
         ResponseParameters:
           gatewayresponse.header.WWW-Authenticate: "'Basic'"
         ResponseType: UNAUTHORIZED
         RestApiId:
-          Ref: 'ApiGatewayRestApi'
-        StatusCode: '401'
+          Ref: "ApiGatewayRestApi"
+        StatusCode: "401"
     packagesTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.TABLE}
         AttributeDefinitions:
-          -
-            AttributeName: 'package_name'
+          - AttributeName: "package_name"
             AttributeType: S
-          -
-            AttributeName: 'version'
+          - AttributeName: "version"
             AttributeType: S
-          -
-            AttributeName: 'normalized_name'
+          - AttributeName: "normalized_name"
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: 'package_name'
+          - AttributeName: "package_name"
             KeyType: HASH
-          -
-            AttributeName: 'version'
+          - AttributeName: "version"
             KeyType: RANGE
         GlobalSecondaryIndexes:
-          -
-            IndexName: 'normalized_name-index'
+          - IndexName: "normalized_name-index"
             KeySchema:
-              -
-                AttributeName: 'normalized_name'
+              - AttributeName: "normalized_name"
                 KeyType: HASH
             Projection:
-                ProjectionType: ALL
+              ProjectionType: ALL
             ProvisionedThroughput:
-                ReadCapacityUnits: 1
-                WriteCapacityUnits: 1
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
@@ -137,7 +130,7 @@ resources:
       Properties:
         PolicyName: ${self:service}-lambda-dynamodb
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action:
@@ -156,7 +149,7 @@ resources:
       Properties:
         PolicyName: ${self:service}-lambda-s3
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action: s3:GetObject
@@ -175,8 +168,7 @@ resources:
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
-            -
-              Effect: "Allow"
+            - Effect: "Allow"
               Principal:
                 Service:
                   - "apigateway.amazonaws.com"
@@ -191,7 +183,7 @@ resources:
       Properties:
         PolicyName: ${self:service}-api_gateway-s3
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Action: s3:GetObject
@@ -235,8 +227,7 @@ resources:
           Ref: ApiGatewayRestApi
         HttpMethod: GET
         MethodResponses:
-          -
-            StatusCode: 200
+          - StatusCode: 200
             ResponseParameters:
               method.response.header.TimeStamp: true
               method.response.header.Content-Length: true
@@ -252,8 +243,7 @@ resources:
               - ApiGatewayS3IamRoleExecution
               - Arn
           IntegrationResponses:
-            -
-              StatusCode: 200
+            - StatusCode: 200
               ResponseParameters:
                 method.response.header.TimeStamp: integration.response.header.Date
                 method.response.header.Content-Length: integration.response.header.Content-Length
