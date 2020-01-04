@@ -14,7 +14,7 @@ provider:
     BUCKET: altitudenetworks-pypi
     TABLE: elasticpypi
     USERNAME: elasticpypi
-    PASSWORD: Password123
+    PASSWORD: ${opt:password, 'Password123'}
     OVERWRITE: true
 
 plugins:

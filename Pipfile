@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+black = "==19.10b0"
+pylint = "*"
+
+[packages]
+basicauth = "==0.4.1"
+flask = "==1.1.1"
+boto3 = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
