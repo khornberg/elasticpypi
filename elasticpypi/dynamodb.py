@@ -47,7 +47,7 @@ class DynamoDBClient:
     def delete_item(self, filename):
         package_name = compute_package_name(filename)
         version = compute_version(filename)
-        self.table.delete_item(Key={"package_name": package_name, "version": version},)
+        self.table.delete_item(Key={"package_name": package_name, "version": version})
 
     def put_item(self, filename):
         package_name = compute_package_name(filename)
