@@ -9,7 +9,13 @@ class TestName(unittest.TestCase):
             normalize("python-Levenshtein-0.12.0.tar.gz"), "python-levenshtein"
         )
         self.assertEqual(normalize("black-19.10b0-py36-none-any.whl"), "black")
+        self.assertEqual(
+            normalize("My-Package-1.2.3dev-py36-none-any.whl"), "my-package"
+        )
 
     def test_compute_version(self):
         self.assertEqual(compute_version("python-Levenshtein-0.12.0.tar.gz"), "0.12.0")
         self.assertEqual(compute_version("black-19.10b0-py36-none-any.whl"), "19.10b0")
+        self.assertEqual(
+            compute_version("My-Package-1.2.3dev4-py36-none-any.whl"), "1.2.3dev4"
+        )
