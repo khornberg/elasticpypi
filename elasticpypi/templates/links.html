@@ -1,9 +1,9 @@
 <html>
   <head>
-  <title>Links for {{ package }}</title>
+  <title>Links for {{ normalized_name }}</title>
   </head>
   <body>
-    <h1>Links for {{ package }}</h1>
+    <h1>Links for {{ normalized_name }}</h1>
     {% for package in packages %}
       <a href="{{ package.download_url }}">{{ package.package_name }}</a></br>
     {% endfor %}

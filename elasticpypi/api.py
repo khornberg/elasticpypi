@@ -9,19 +9,22 @@ from elasticpypi.config import config
 app = Flask(__name__)
 
 
-@app.route("/simple/", methods=["GET", "POST"])
+@app.route("/simple/")
 def simple():
     dynamodb_client = DynamoDBClient()
     prefixes = dynamodb_client.list_packages()
     return render_template("simple.html", prefixes=prefixes, stage=config["stage"])
 
 
-@app.route("/simple/<name>/")
-def simple_name(name):
+@app.route("/simple/<normalized_name>/")
+def simple_name(normalized_name):
     dynamodb_client = DynamoDBClient()
-    packages = dynamodb_client.list_packages_by_name(name)
+    packages = dynamodb_client.list_packages_by_name(normalized_name)
     if not packages:
         abort(404)
     return render_template(
-        "links.html", packages=packages, package=name, stage=config["stage"]
+        "links.html",
+        packages=packages,
+        normalized_name=normalized_name,
+        stage=config["stage"],
     )

@@ -22,10 +22,10 @@ class DynamoDBClient:
         packages = [(package, package) for package in sorted(package_set)]
         return packages
 
-    def list_packages_by_name(self, package_name):
+    def list_packages_by_name(self, normalized_name):
         dynamodb_packages = self.table.query(
             IndexName="normalized_name-index",
-            KeyConditionExpression=Key("normalized_name").eq(package_name),
+            KeyConditionExpression=Key("normalized_name").eq(normalized_name),
             ProjectionExpression="package_name",
             ScanIndexForward=False,
         )
