@@ -37,7 +37,7 @@ class DynamoDBClient:
         dynamodb_packages = self.table.query(
             IndexName="normalized_name-index",
             KeyConditionExpression=Key("normalized_name").eq(normalized_name),
-            ProjectionExpression="package_name",
+            ProjectionExpression="package_name,normalized_name,version",
             ScanIndexForward=False,
         )
         packages: List[Package] = []
