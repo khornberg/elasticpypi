@@ -45,19 +45,17 @@ class DynamoDBClient:
         return packages
 
     def delete_item(self, filename):
-        package_name = compute_package_name(filename)
         version = compute_version(filename)
-        self.table.delete_item(Key={"package_name": package_name, "version": version})
+        self.table.delete_item(Key={"package_name": filename, "version": version})
 
     def put_item(self, filename):
-        package_name = compute_package_name(filename)
         version = compute_version(filename)
-        normalized_name = normalize(package_name)
+        normalized_name = normalize(filename)
         data = {
-            "package_name": urllib.parse.unquote_plus(package_name),
-            "version": urllib.parse.unquote_plus(version),
-            "filename": urllib.parse.unquote_plus(filename),
-            "normalized_name": urllib.parse.unquote_plus(normalized_name),
+            "package_name": filename,
+            "version": version,
+            "filename": filename,
+            "normalized_name": normalized_name,
         }
         self.table.put_item(Item=data)
         return data

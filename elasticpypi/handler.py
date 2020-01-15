@@ -1,6 +1,5 @@
 from basicauth import decode
 
-from elasticpypi.name import compute_package_name, normalize, compute_version
 from elasticpypi.config import config
 from elasticpypi.auth import AuthPolicy
 from elasticpypi.dynamodb import DynamoDBClient
@@ -8,9 +7,6 @@ from elasticpypi.dynamodb import DynamoDBClient
 
 def s3(event, _context):
     filename = event.get("Records")[0]["s3"]["object"]["key"]
-    package_name = compute_package_name(filename)
-    version = compute_version(filename)
-    normalized_name = normalize(package_name)
     dynamodb_client = DynamoDBClient()
     if "Delete" in event["Records"][0]["eventName"]:
         dynamodb_client.delete_item(filename)

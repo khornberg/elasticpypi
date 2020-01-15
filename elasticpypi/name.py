@@ -1,57 +1,14 @@
 """
 From https://github.com/vendasta/cloudpypi/blob/master/cloudpypi/package_api.py#L14
 """
-import os
 import re
 
-ARCHIVE_SUFFIX = r"(\.zip|\.tar\.gz|\.tgz|\.tar\.bz3|-py[23]\.\d-.*|\.win-amd64-py[23]\.\d\..*|\.win32-py[23]\.\d\..*)$"
+RE_NORMALIZE = re.compile(r"[-_.]+")
 
-_archive_suffix_re = re.compile(ARCHIVE_SUFFIX, re.IGNORECASE)
-
-wheel_file_re = re.compile(
-    r"""^(?P<namever>(?P<name>.+?)-(?P<ver>\d.*?))
-    ((-(?P<build>\d.*?))?-(?P<pyver>.+?)-(?P<abi>.+?)-(?P<plat>.+?)
-    \.whl|\.dist-info)$""",
-    re.VERBOSE,
-)
+def compute_version(filename: str) -> str:
+    version = filename.split('-', 2)[1]
 
 
-def _compute_package_name_wheel(basename):
-    m = wheel_file_re.match(basename)
-    if not m:
-        return None, None
-    return m.group("name")
-
-
-def compute_package_name(path):
-    path = os.path.basename(path)
-    if path.endswith(".whl"):
-        return _compute_package_name_wheel(path)
-
-    path = _archive_suffix_re.sub("", path)
-    if "-" not in path:
-        name, _ = path, ""
-    elif path.count("-") == 1:
-        name, _ = path.split("-", 1)
-    elif "." not in path:
-        name, _ = path.rsplit("-", 1)
-    else:
-        parts = re.split(r"-(?=(?i)v?\d+[\.a-z])", path)
-        name = "-".join(parts[:-1])
-    return name
-
-
-def compute_version(path):
-    path = os.path.basename(path)
-    if path.endswith(".whl"):
-        m = wheel_file_re.match(path)
-        return m.group("ver")
-    match = re.match(f".+-(?P<version>.*){ARCHIVE_SUFFIX}$", path)
-    if match:
-        return match.group("version")
-    return "1.0"
-
-
-def normalize(name):
+def normalize(filename: str) -> str:
     # From https://www.python.org/dev/peps/pep-0503/
-    return re.sub(r"[-_.]+", "-", name).lower()
+    return RE_NORMALIZE.sub("-", filename)
