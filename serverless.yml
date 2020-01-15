@@ -106,12 +106,10 @@ resources:
             AttributeType: S
           - AttributeName: "normalized_name"
             AttributeType: S
-          - AttributeName: "filename"
-            AttributeType: S
         KeySchema:
           - AttributeName: "package_name"
             KeyType: HASH
-          - AttributeName: "filename"
+          - AttributeName: "version"
             KeyType: RANGE
         GlobalSecondaryIndexes:
           - IndexName: "normalized_name-index"
