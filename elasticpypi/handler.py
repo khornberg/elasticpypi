@@ -6,12 +6,17 @@ from elasticpypi.dynamodb import DynamoDBClient
 
 
 def s3(event, _context):
-    filename = event.get("Records")[0]["s3"]["object"]["key"]
+    print(f"S3 event: {event}")
+    s3_object = event.get("Records")[0]["s3"]["object"]
+    print(f"Got S3 object: {s3_object}")
+    package_name = s3_object["key"]
     dynamodb_client = DynamoDBClient()
     if "Delete" in event["Records"][0]["eventName"]:
-        dynamodb_client.delete_item(filename)
+        print(f"Deleting file from dynamo: {package_name}")
+        dynamodb_client.delete_item(package_name)
         return None
-    dynamodb_client.put_item(filename)
+    print(f"Adding file to dynamo: {package_name}")
+    dynamodb_client.put_item(package_name)
     return None
 
 

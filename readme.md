@@ -15,6 +15,7 @@ A fully functional, self-hosted simple pypi service running on AWS.
 - Fixed package links in GUI
 - Missing packages return 404 status code instead of a page with no links
 - Fixed S3 delete trigger
+- Support for multiple platforms
 
 ## Usage
 

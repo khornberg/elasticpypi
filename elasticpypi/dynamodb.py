@@ -5,7 +5,7 @@ from boto3.dynamodb.conditions import Key
 
 from elasticpypi.config import config
 from elasticpypi.s3 import S3Client
-from elasticpypi.name import compute_package_name, normalize, compute_version
+from elasticpypi.name import normalize, compute_version
 
 
 class DynamoDBClient:
@@ -23,47 +23,40 @@ class DynamoDBClient:
         return packages
 
     def list_packages_by_name(self, package_name):
-        normalized_name = normalize(package_name)
         dynamodb_packages = self.table.query(
             IndexName="normalized_name-index",
-            KeyConditionExpression=Key("normalized_name").eq(normalized_name),
-            ProjectionExpression="filename",
+            KeyConditionExpression=Key("normalized_name").eq(package_name),
+            ProjectionExpression="package_name",
             ScanIndexForward=False,
         )
-        sorted_packages = sorted(
-            dynamodb_packages["Items"], key=lambda k: k["filename"]
-        )
-        packages = []
-        for package in sorted_packages:
-            filename = package["filename"]
-            packages.append(
-                {
-                    "filename": filename,
-                    "download_url": self.s3_client.get_presigned_download_url(filename),
-                }
+        packages = dynamodb_packages["Items"]
+        packages.sort(key=lambda k: k["package_name"])
+        for package in packages:
+            package_name = package["package_name"]
+            package["download_url"] = self.s3_client.get_presigned_download_url(
+                package_name
             )
         return packages
 
-    def delete_item(self, filename):
-        version = compute_version(filename)
-        self.table.delete_item(Key={"package_name": filename, "version": version})
+    def delete_item(self, package_name):
+        version = compute_version(package_name)
+        self.table.delete_item(Key={"package_name": package_name, "version": version})
 
-    def put_item(self, filename):
-        version = compute_version(filename)
-        normalized_name = normalize(filename)
+    def put_item(self, package_name):
+        version = compute_version(package_name)
+        normalized_name = normalize(package_name)
         data = {
-            "package_name": filename,
+            "package_name": package_name,
             "version": version,
-            "filename": filename,
             "normalized_name": normalized_name,
         }
         self.table.put_item(Item=data)
         return data
 
-    def exists(self, filename):
+    def exists(self, package_name):
         dynamodb_packages = self.table.query(
-            KeyConditionExpression=Key("package_name").eq(filename),
-            ProjectionExpression="filename",
+            KeyConditionExpression=Key("package_name").eq(package_name),
+            ProjectionExpression="package_name",
             ScanIndexForward=False,
         )
         return dynamodb_packages.get("Count", 0)
