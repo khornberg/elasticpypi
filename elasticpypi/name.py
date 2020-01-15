@@ -16,4 +16,4 @@ def normalize(package_name: str) -> str:
     if not match:
         raise ValueError(f"Wrong package name format: {package_name}")
 
-    return match.group("name").lower()
+    return match.group("name").lower().replace(".", "-").replace("_", "-")
