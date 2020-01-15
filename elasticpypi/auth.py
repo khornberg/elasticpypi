@@ -1,5 +1,8 @@
-# modified from https://github.com/awslabs/aws-apigateway-lambda-authorizer-blueprints/blob/master/blueprints/python/api-gateway-authorizer-python.py # noqa E501
+"""
+AWS Auto policy helper.
+"""
 import re
+from typing import List, Dict, Any
 
 
 class HttpVerb:
@@ -14,12 +17,16 @@ class HttpVerb:
 
 
 class AuthPolicy:
+    """
+    AWS Auto policy helper.
+    """
+
     awsAccountId = ""
     principalId = ""
     version = "2012-10-17"
     pathRegex = "^[/.a-zA-Z0-9-*]+$"
-    allowMethods = []
-    denyMethods = []
+    allowMethods: List[Dict[str, Any]] = []
+    denyMethods: List[Dict[str, Any]] = []
     restApiId = "*"
     region = "*"
     stage = "*"
@@ -83,13 +90,18 @@ class AuthPolicy:
         return statements
 
     def allowAllMethods(self):
+        """
+        Allow all request sources.
+        """
         self._addMethod("Allow", HttpVerb.ALL, "*", [])
 
     def build(self):
-        if (self.allowMethods is None or len(self.allowMethods) == 0) and (
-            self.denyMethods is None or len(self.denyMethods) == 0
-        ):
+        """
+        Build policy.
+        """
+        if not self.allowMethods and not self.denyMethods:
             raise NameError("No statements defined for the policy")
+
         policy = {
             "principalId": self.principalId,
             "policyDocument": {"Version": self.version, "Statement": []},

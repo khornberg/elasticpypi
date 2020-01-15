@@ -10,14 +10,17 @@ app = Flask(__name__)
 
 
 @app.route("/simple/")
-def simple():
+def simple() -> str:
     dynamodb_client = DynamoDBClient()
-    prefixes = dynamodb_client.list_packages()
-    return render_template("simple.html", prefixes=prefixes, stage=config["stage"])
+    normalized_names = dynamodb_client.list_normalized_names()
+    normalized_names.sort()
+    return render_template(
+        "simple.html", normalized_names=normalized_names, stage=config["stage"]
+    )
 
 
 @app.route("/simple/<normalized_name>/")
-def simple_name(normalized_name):
+def simple_name(normalized_name: str) -> str:
     dynamodb_client = DynamoDBClient()
     packages = dynamodb_client.list_packages_by_name(normalized_name)
     if not packages:

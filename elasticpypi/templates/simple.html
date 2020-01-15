@@ -3,8 +3,8 @@
     <title>Simple Index</title>
   </head>
   <body>
-    {% for prefix in prefixes %}
-      <a href="/{{ stage }}/simple/{{ prefix.0 }}/">{{ prefix.1 }}</a><br/>
+    {% for normalized_name in normalized_names %}
+      <a href="/{{ stage }}/simple/{{ normalized_name }}/">{{ normalized_name }}</a><br/>
     {% endfor %}
   </body>
 </html>
