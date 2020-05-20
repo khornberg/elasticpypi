@@ -37,7 +37,9 @@ def download(package_name: str) -> Response:
     s3_client = S3Client(env_namespace.bucket)
     s3_object = s3_client.get_object(package_name)
     presigned_url = s3_client.get_presigned_download_url(package_name)
-    response = redirect(presigned_url)
+    response: Response = redirect(presigned_url, code=301)
     response.cache_control.max_age = 365000000
     response.set_etag(s3_object["ETag"].replace('"', ""))
+    response.content_length = s3_object["ContentLength"]
+    response.last_modified = s3_object["LastModified"]
     return response
