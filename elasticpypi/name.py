@@ -1,9 +1,9 @@
-import re
-from packaging.utils import canonicalize_name
-from packaging.version import Version, InvalidVersion
 import os.path
+import re
 from typing import Tuple
 
+from packaging.utils import canonicalize_name
+from packaging.version import InvalidVersion, Version
 
 EXTENSIONS = (".tar", ".gz", ".bz", ".whl", ".zip")
 

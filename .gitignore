@@ -13,5 +13,6 @@ yarn.lock
 package-lock.json
 venv/
 
-wsgi_handler.pyc
-serverless_pypi
+wsgi_handler.py
+serverless_wsgi.py
+.serverless-wsgi

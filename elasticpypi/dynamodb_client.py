@@ -1,9 +1,9 @@
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 import boto3
 from boto3.dynamodb.conditions import Key
 
-from elasticpypi.name import normalize_version, normalize_name
+from elasticpypi.name import normalize_name, normalize_version
 from elasticpypi.package import Package
 
 

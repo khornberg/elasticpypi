@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, abort, redirect, render_template, Response
+from flask import Flask, Response, abort, redirect, render_template
 
 from elasticpypi.dynamodb_client import DynamoDBClient
 from elasticpypi.env_namespace import EnvNamespace
