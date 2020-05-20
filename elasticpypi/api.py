@@ -9,7 +9,7 @@ from elasticpypi.s3_client import S3Client
 
 app = Flask(__name__)
 
-PRESIGNED_URL_EXPIRES_IN_SEC = 60 * 60 * 24 * 7
+PRESIGNED_URL_EXPIRES_IN_SEC = 60
 
 
 @app.route("/simple/")
@@ -38,13 +38,13 @@ def simple_name(normalized_name: str) -> Response:
 def download(package_name: str) -> Response:
     now = int(time.time())
     env_namespace = EnvNamespace(os.environ)
-    s3_client = S3Client(env_namespace.bucket)
     dynamodb_client = DynamoDBClient(env_namespace.table)
     package = dynamodb_client.get_item(package_name)
     if (
         not package.presigned_url
         or package.updated + PRESIGNED_URL_EXPIRES_IN_SEC < now
     ):
+        s3_client = S3Client(env_namespace.bucket)
         package.presigned_url = s3_client.get_presigned_download_url(
             package_name, expires_in=PRESIGNED_URL_EXPIRES_IN_SEC + 60
         )

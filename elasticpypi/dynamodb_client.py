@@ -113,5 +113,5 @@ class DynamoDBClient:
             version=package_data["version"],
             sha256=package_data.get("sha256", ""),
             presigned_url=package_data.get("presigned_url", ""),
-            updated=package_data.get("updated", 0),
+            updated=int(package_data.get("updated", 0)),
         )
