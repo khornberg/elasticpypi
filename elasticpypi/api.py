@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, Response, abort, redirect, render_template
+from flask import Flask, Response, abort, redirect, render_template, send_file
 
 from elasticpypi.dynamodb_client import DynamoDBClient
 from elasticpypi.env_namespace import EnvNamespace
@@ -37,7 +37,11 @@ def download(package_name: str) -> Response:
     s3_client = S3Client(env_namespace.bucket)
     dynamodb_client = DynamoDBClient(env_namespace.table)
     package = dynamodb_client.get_item(package_name)
-    response: Response = redirect(s3_client.get_presigned_download_url(package_name))
+    s3_object = s3_client.get_object(package_name)
+    response = Response(s3_object["Body"], mimetype="binary/octet-stream")
+    response.content_length = s3_object["ContentLength"]
+    response.last_modified = s3_object["LastModified"]
+    response.accept_ranges = "bytes"
     if package.sha256:
         response.set_etag(package.sha256)
     return response
