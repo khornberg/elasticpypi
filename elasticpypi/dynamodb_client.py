@@ -82,3 +82,22 @@ class DynamoDBClient:
             ScanIndexForward=False,
         )
         return dynamodb_packages.get("Count", 0)
+
+    def get_item(self, package_name: str) -> Optional[Package]:
+        """
+        Check if `package_name` exists in DB.
+        """
+        dynamodb_packages = self.table.query(
+            KeyConditionExpression=Key("package_name").eq(package_name),
+            ScanIndexForward=False,
+        )
+        if not dynamodb_packages["Items"]:
+            return None
+
+        package_data = dynamodb_packages["Items"][0]
+        return Package(
+            name=package_data["package_name"],
+            normalized_name=package_data["normalized_name"],
+            version=package_data["version"],
+            sha256=package_data.get("sha256", ""),
+        )

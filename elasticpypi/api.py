@@ -35,5 +35,9 @@ def simple_name(normalized_name: str) -> Response:
 def download(package_name: str) -> Response:
     env_namespace = EnvNamespace(os.environ)
     s3_client = S3Client(env_namespace.bucket)
+    dynamodb_client = DynamoDBClient(env_namespace.table)
+    package = dynamodb_client.get_item(package_name)
     response: Response = redirect(s3_client.get_presigned_download_url(package_name))
+    if package.sha256:
+        response.set_etag(package.sha256)
     return response
