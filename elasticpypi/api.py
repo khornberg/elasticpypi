@@ -9,7 +9,7 @@ from elasticpypi.s3_client import S3Client
 
 app = Flask(__name__)
 
-PRESIGNED_URL_EXPIRES_IN_SEC = 60
+PRESIGNED_URL_EXPIRES_IN_SEC = 60 * 60 * 24 * 365
 
 
 @app.route("/simple/")
