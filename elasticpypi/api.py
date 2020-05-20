@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, abort, redirect, render_template, Response
 
-from elasticpypi.dynamodb import DynamoDBClient
+from elasticpypi.dynamodb_client import DynamoDBClient
 from elasticpypi.env_namespace import EnvNamespace
 from elasticpypi.s3_client import S3Client
 
@@ -35,4 +35,5 @@ def simple_name(normalized_name: str) -> Response:
 def download(package_name: str) -> Response:
     env_namespace = EnvNamespace(os.environ)
     s3_client = S3Client(env_namespace.bucket)
-    return redirect(s3_client.get_presigned_download_url(package_name))
+    response: Response = redirect(s3_client.get_presigned_download_url(package_name))
+    return response

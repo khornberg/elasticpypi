@@ -3,8 +3,9 @@ import os
 from basicauth import decode
 
 from elasticpypi.auth import AuthPolicy
-from elasticpypi.dynamodb import DynamoDBClient
+from elasticpypi.dynamodb_client import DynamoDBClient
 from elasticpypi.env_namespace import EnvNamespace
+from elasticpypi.s3_client import S3Client
 
 
 def s3(event, _context):
@@ -18,8 +19,11 @@ def s3(event, _context):
         print(f"Deleting file from dynamo: {package_name}")
         dynamodb_client.delete_item(package_name)
         return None
+
     print(f"Adding file to dynamo: {package_name}")
-    dynamodb_client.put_item(package_name)
+    s3_client = S3Client()
+    package_sha256 = s3_client.get_sha256(package_name)
+    dynamodb_client.put_item(package_name, package_sha256)
     return None
 
 

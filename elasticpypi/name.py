@@ -1,19 +1,36 @@
 import re
-
-RE_PACKAGE_NAME = re.compile(r"^(?P<name>.+)-(?P<version>\d+(\.\d+[^-.]*)+)")
-
-
-def compute_version(package_name: str) -> str:
-    match = RE_PACKAGE_NAME.match(package_name)
-    if not match:
-        raise ValueError(f"Wrong package name format: {package_name}")
-
-    return match.group("version")
+from packaging.utils import canonicalize_name
+from packaging.version import Version, InvalidVersion
+import os.path
+from typing import Tuple
 
 
-def normalize(package_name: str) -> str:
-    match = RE_PACKAGE_NAME.match(package_name)
-    if not match:
-        raise ValueError(f"Wrong package name format: {package_name}")
+EXTENSIONS = (".tar", ".gz", ".bz", ".whl", ".zip")
 
-    return match.group("name").lower().replace(".", "-").replace("_", "-")
+
+def get_parts(package_name: str) -> Tuple[str, str]:
+    while os.path.splitext(package_name)[-1].lower() in EXTENSIONS:
+        package_name = os.path.splitext(package_name)[0]
+
+    parts = package_name.split("-")
+    while parts:
+        last_part = parts[-1]
+        if last_part and last_part[0].isdigit():
+            version_str = parts.pop()
+            try:
+                version_str = str(Version(version_str))
+            except InvalidVersion:
+                pass
+            return (canonicalize_name("-".join(parts)), version_str)
+
+        parts.pop()
+
+    return (canonicalize_name(package_name), "0.0.0")
+
+
+def normalize_version(package_name: str) -> str:
+    return get_parts(package_name)[-1]
+
+
+def normalize_name(package_name: str) -> str:
+    return get_parts(package_name)[0]

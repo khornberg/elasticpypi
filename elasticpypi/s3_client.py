@@ -2,6 +2,8 @@
 Client for AWS S3.
 """
 import boto3
+from io import BytesIO
+import hashlib
 
 
 class S3Client:
@@ -17,7 +19,17 @@ class S3Client:
         """
         Upload `payload` as `package_name`.
         """
-        self.client.upload_fileobj(payload, self.bucket, package_name)
+        self.client.upload_fileobj(
+            Fileobj=payload, Bucket=self.bucket, Key=package_name
+        )
+
+    def get_sha256(self, package_name: str):
+        fileobj = BytesIO()
+        self.client.download_fileobj(
+            Bucket=self.bucket, Key=package_name, Fileobj=fileobj
+        )
+        fileobj.seek(0)
+        return hashlib.sha256(fileobj.read()).hexdigest()
 
     def get_presigned_download_url(self, package_name: str) -> str:
         """

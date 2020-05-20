@@ -1,9 +1,9 @@
-from typing import List
+from typing import List, Dict, Optional
 
 import boto3
 from boto3.dynamodb.conditions import Key
 
-from elasticpypi.name import compute_version, normalize
+from elasticpypi.name import normalize_version, normalize_name
 from elasticpypi.package import Package
 
 
@@ -33,7 +33,7 @@ class DynamoDBClient:
         dynamodb_packages = self.table.query(
             IndexName="normalized_name-index",
             KeyConditionExpression=Key("normalized_name").eq(normalized_name),
-            ProjectionExpression="package_name,normalized_name,version",
+            ProjectionExpression="package_name,normalized_name,version,sha256",
             ScanIndexForward=False,
         )
         packages: List[Package] = []
@@ -42,30 +42,35 @@ class DynamoDBClient:
                 name=package_data["package_name"],
                 normalized_name=package_data["normalized_name"],
                 version=package_data["version"],
+                sha256=package_data.get("sha256", ""),
             )
             packages.append(package)
         packages.sort(key=lambda k: k.name)
         return packages
 
-    def delete_item(self, package_name: str) -> None:
+    def delete_item(self, package_name: str, version: Optional[str] = None) -> None:
         """
         Delete item with `package_name`.
         """
-        version = compute_version(package_name)
+        if not version:
+            version = normalize_version(package_name)
+
         self.table.delete_item(Key={"package_name": package_name, "version": version})
 
-    def put_item(self, package_name: str) -> None:
+    def put_item(self, package_name: str, package_sha256: str) -> Dict[str, str]:
         """
         Add item with `package_name`.
         """
-        version = compute_version(package_name)
-        normalized_name = normalize(package_name)
+        version = normalize_version(package_name)
+        normalized_name = normalize_name(package_name)
         data = {
             "package_name": package_name,
             "version": version,
             "normalized_name": normalized_name,
+            "sha256": package_sha256,
         }
         self.table.put_item(Item=data)
+        return data
 
     def exists(self, package_name: str) -> bool:
         """
