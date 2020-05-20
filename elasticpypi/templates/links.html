@@ -5,15 +5,9 @@
   <body>
     <h1>Links for {{ normalized_name }}</h1>
     {% for package in packages %}
-      {% if package.sha256 %}
-        <a href="{{ url_for('download', package_name=package.name) }}#sha256={{ package.sha256 }}">
-          {{ package.name }}
-        </a>
-      {% else %}
-        <a href="{{ url_for('download', package_name=package.name) }}">
-          {{ package.name }}
-        </a>
-      {% endif %}
+      <a href="{{ url_for('download', package_name=package.name) }}#sha256={{ package.sha256 }}">
+        {{ package.name }}
+      </a>
       <br />
     {% endfor %}
   </body>

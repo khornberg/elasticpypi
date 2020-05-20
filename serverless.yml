@@ -115,6 +115,8 @@ resources:
             AttributeType: S
           - AttributeName: "normalized_name"
             AttributeType: S
+          - AttributeName: "sha256"
+            AttributeType: S
         KeySchema:
           - AttributeName: "package_name"
             KeyType: HASH
@@ -128,11 +130,11 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+              ReadCapacityUnits: 50
+              WriteCapacityUnits: 10
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 50
+          WriteCapacityUnits: 10
     DynamoDBIamPolicy:
       Type: AWS::IAM::Policy
       DependsOn: packagesTable
