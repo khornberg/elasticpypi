@@ -32,7 +32,7 @@ def simple_name(normalized_name: str) -> str:
         "links.html",
         packages=packages,
         normalized_name=normalized_name,
-        stage=EnvNamespace().stage,
+        stage=env_namespace.stage,
     )
 
 

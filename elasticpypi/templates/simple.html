@@ -4,7 +4,7 @@
   </head>
   <body>
     {% for normalized_name in normalized_names %}
-      <a href="/{{ stage }}/simple/{{ normalized_name }}/">{{ normalized_name }}</a><br/>
+      <a href="{{ url_for('simple_name', normalized_name=normalized_name) }}">{{ normalized_name }}</a><br/>
     {% endfor %}
   </body>
 </html>

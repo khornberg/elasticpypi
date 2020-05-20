@@ -44,7 +44,7 @@ class DynamoDBClient:
                 version=package_data["version"],
             )
             packages.append(package)
-        packages.sort(key=lambda k: k.package_name)
+        packages.sort(key=lambda k: k.name)
         return packages
 
     def delete_item(self, package_name: str) -> None:

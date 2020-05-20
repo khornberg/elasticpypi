@@ -12,3 +12,6 @@ elasticpypi/config.json
 yarn.lock
 package-lock.json
 venv/
+
+wsgi_handler.pyc
+serverless_pypi
