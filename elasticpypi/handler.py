@@ -1,16 +1,19 @@
+import os
+
 from basicauth import decode
 
-from elasticpypi.config import config
 from elasticpypi.auth import AuthPolicy
 from elasticpypi.dynamodb import DynamoDBClient
+from elasticpypi.env_namespace import EnvNamespace
 
 
 def s3(event, _context):
+    env_namespace = EnvNamespace(os.environ)
     print(f"S3 event: {event}")
     s3_object = event.get("Records")[0]["s3"]["object"]
     print(f"Got S3 object: {s3_object}")
     package_name = s3_object["key"]
-    dynamodb_client = DynamoDBClient()
+    dynamodb_client = DynamoDBClient(env_namespace.table)
     if "Delete" in event["Records"][0]["eventName"]:
         print(f"Deleting file from dynamo: {package_name}")
         dynamodb_client.delete_item(package_name)
@@ -21,9 +24,11 @@ def s3(event, _context):
 
 
 def auth(event, _context):
+    env_namespace = EnvNamespace(os.environ)
     user, pwd = decode(event["headers"]["Authorization"])
-    if user != config["username"] or pwd != config["password"]:
-        raise Exception("Unauthorized")
+    if user != env_namespace.username or pwd != env_namespace.password:
+        raise ValueError("Unauthorized")
+
     principalId = user
     tmp = event["methodArn"].split(":")
     apiGatewayArnTmp = tmp[5].split("/")

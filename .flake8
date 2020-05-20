@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 100
+exclude = .git,__pycache__,docs,build,dist,vulture_whitelist.py,test_*.py
+ignore = E203,W503
+max-complexity = 12

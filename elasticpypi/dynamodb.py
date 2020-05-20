@@ -1,12 +1,9 @@
-import urllib
 from typing import List
 
 import boto3
 from boto3.dynamodb.conditions import Key
 
-from elasticpypi.config import config
-from elasticpypi.s3 import S3Client
-from elasticpypi.name import normalize, compute_version
+from elasticpypi.name import compute_version, normalize
 from elasticpypi.package import Package
 
 
@@ -15,10 +12,9 @@ class DynamoDBClient:
     AWS DynamoDB client.
     """
 
-    def __init__(self):
-        self.s3_client = S3Client()
+    def __init__(self, table_name: str) -> None:
         self.resource = boto3.resource("dynamodb")
-        self.table = self.resource.Table(config["table"])
+        self.table = self.resource.Table(table_name)
 
     def list_normalized_names(self) -> List[str]:
         """
@@ -43,12 +39,9 @@ class DynamoDBClient:
         packages: List[Package] = []
         for package_data in dynamodb_packages["Items"]:
             package = Package(
-                package_name=package_data["package_name"],
+                name=package_data["package_name"],
                 normalized_name=package_data["normalized_name"],
                 version=package_data["version"],
-                download_url=self.s3_client.get_presigned_download_url(
-                    package_data["package_name"]
-                ),
             )
             packages.append(package)
         packages.sort(key=lambda k: k.package_name)

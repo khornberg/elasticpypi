@@ -3,17 +3,15 @@ Client for AWS S3.
 """
 import boto3
 
-from elasticpypi.config import config
-
 
 class S3Client:
     """
     Client for AWS S3.
     """
 
-    def __init__(self):
+    def __init__(self, bucket: str) -> None:
         self.client = boto3.client("s3")
-        self.bucket = config["bucket"]
+        self.bucket = bucket
 
     def upload(self, package_name: str, payload: bytes) -> None:
         """

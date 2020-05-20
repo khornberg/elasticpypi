@@ -2,7 +2,7 @@
 AWS Auto policy helper.
 """
 import re
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 class HttpVerb:
@@ -65,13 +65,13 @@ class AuthPolicy:
                 {"resourceArn": resourceArn, "conditions": conditions}
             )
 
-    def _getEmptyStatement(self, effect):
-        statement = {
+    @staticmethod
+    def _getEmptyStatement(effect):
+        return {
             "Action": "execute-api:Invoke",
             "Effect": effect[:1].upper() + effect[1:].lower(),
             "Resource": [],
         }
-        return statement
 
     def _getStatementForEffect(self, effect, methods):
         statements = []
