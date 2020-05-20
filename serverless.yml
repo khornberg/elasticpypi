@@ -61,6 +61,15 @@ functions:
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             type: request
+      - http:
+          path: simple/download/{name}
+          method: get
+          integration: lambda-proxy
+          authorizer:
+            name: authorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: request
   s3:
     handler: elasticpypi.handler.s3
     events:
