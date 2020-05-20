@@ -1,5 +1,4 @@
 import os
-import time
 
 from basicauth import decode
 
@@ -24,7 +23,7 @@ def s3(event, _context):
         return None
 
     print(f"Adding file to dynamo: {package_name}")
-    s3_client = S3Client()
+    s3_client = S3Client(bucket=env_namespace.bucket)
     package = Package(
         name=package_name,
         normalized_name=normalize_name(package_name),

@@ -3,7 +3,6 @@ from typing import Dict, List, Optional
 import boto3
 from boto3.dynamodb.conditions import Key
 
-from elasticpypi.name import normalize_name, normalize_version
 from elasticpypi.package import Package
 
 
@@ -50,13 +49,10 @@ class DynamoDBClient:
         packages.sort(key=lambda k: k.name)
         return packages
 
-    def delete_item(self, package_name: str, version: Optional[str] = None) -> None:
+    def delete_item(self, package_name: str, version: str) -> None:
         """
         Delete item with `package_name`.
         """
-        if not version:
-            version = normalize_version(package_name)
-
         self.table.delete_item(Key={"package_name": package_name, "version": version})
 
     def put_item(self, package: Package) -> Dict[str, str]:

@@ -1,5 +1,4 @@
 import os.path
-import re
 from typing import Tuple
 
 from packaging.utils import canonicalize_name
