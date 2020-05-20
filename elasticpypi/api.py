@@ -42,6 +42,7 @@ def download(package_name: str) -> Response:
     response.content_length = s3_object["ContentLength"]
     response.last_modified = s3_object["LastModified"]
     response.accept_ranges = "bytes"
+    response.cache_control.max_age = 365000000
     if package.sha256:
         response.set_etag(package.sha256)
     return response
