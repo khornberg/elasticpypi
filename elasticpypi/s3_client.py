@@ -28,12 +28,14 @@ class S3Client:
         fileobj.seek(0)
         return hashlib.sha256(fileobj.read()).hexdigest()
 
-    def get_presigned_download_url(self, key: str) -> str:
+    def get_presigned_download_url(self, key: str, expires_in: int) -> str:
         """
         Get presigned URL for `package_name`.
         """
         response = self.client.generate_presigned_url(
-            "get_object", Params={"Bucket": self.bucket, "Key": key}, ExpiresIn=3600,
+            "get_object",
+            Params={"Bucket": self.bucket, "Key": key},
+            ExpiresIn=expires_in,
         )
         return response
 

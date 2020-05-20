@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+import time
 
 
 @dataclass
@@ -7,3 +8,5 @@ class Package:
     normalized_name: str
     version: str
     sha256: str
+    presigned_url: str
+    updated: int

@@ -43,6 +43,8 @@ class DynamoDBClient:
                 normalized_name=package_data["normalized_name"],
                 version=package_data["version"],
                 sha256=package_data.get("sha256", ""),
+                presigned_url="",
+                updated=0,
             )
             packages.append(package)
         packages.sort(key=lambda k: k.name)
@@ -57,20 +59,30 @@ class DynamoDBClient:
 
         self.table.delete_item(Key={"package_name": package_name, "version": version})
 
-    def put_item(self, package_name: str, package_sha256: str) -> Dict[str, str]:
+    def put_item(self, package: Package) -> Dict[str, str]:
         """
         Add item with `package_name`.
         """
-        version = normalize_version(package_name)
-        normalized_name = normalize_name(package_name)
         data = {
-            "package_name": package_name,
-            "version": version,
-            "normalized_name": normalized_name,
-            "sha256": package_sha256,
+            "package_name": package.name,
+            "version": package.version,
+            "normalized_name": package.normalized_name,
+            "sha256": package.sha256,
+            "presigned_url": package.presigned_url,
+            "updated": package.updated,
         }
         self.table.put_item(Item=data)
         return data
+
+    def update_item(self, package: Package) -> None:
+        self.table.update_item(
+            Key={"package_name": package.name, "version": package.version},
+            UpdateExpression="set presigned_url = :presigned_url, updated = :updated",
+            ExpressionAttributeValues={
+                ":presigned_url": package.presigned_url,
+                ":updated": package.updated,
+            },
+        )
 
     def exists(self, package_name: str) -> bool:
         """
@@ -100,4 +112,6 @@ class DynamoDBClient:
             normalized_name=package_data["normalized_name"],
             version=package_data["version"],
             sha256=package_data.get("sha256", ""),
+            presigned_url=package_data.get("presigned_url", ""),
+            updated=package_data.get("updated", 0),
         )

@@ -1,4 +1,5 @@
 import os
+import time
 
 from basicauth import decode
 
@@ -6,6 +7,8 @@ from elasticpypi.auth import AuthPolicy
 from elasticpypi.dynamodb_client import DynamoDBClient
 from elasticpypi.env_namespace import EnvNamespace
 from elasticpypi.s3_client import S3Client
+from elasticpypi.package import Package
+from elasticpypi.name import normalize_name, normalize_version
 
 
 def s3(event, _context):
@@ -17,13 +20,20 @@ def s3(event, _context):
     dynamodb_client = DynamoDBClient(env_namespace.table)
     if "Delete" in event["Records"][0]["eventName"]:
         print(f"Deleting file from dynamo: {package_name}")
-        dynamodb_client.delete_item(package_name)
+        dynamodb_client.delete_item(package_name, normalize_version(package_name))
         return None
 
     print(f"Adding file to dynamo: {package_name}")
     s3_client = S3Client()
-    package_sha256 = s3_client.get_sha256(package_name)
-    dynamodb_client.put_item(package_name, package_sha256)
+    package = Package(
+        name=package_name,
+        normalized_name=normalize_name(package_name),
+        version=normalize_version(package_name),
+        sha256=s3_client.get_sha256(package_name),
+        presigned_url="",
+        updated=0,
+    )
+    dynamodb_client.put_item(package)
     return None
 
 

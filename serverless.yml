@@ -117,6 +117,10 @@ resources:
             AttributeType: S
           - AttributeName: "sha256"
             AttributeType: S
+          - AttributeName: "presigned_url"
+            AttributeType: S
+          - AttributeName: "updated"
+            AttributeType: N
         KeySchema:
           - AttributeName: "package_name"
             KeyType: HASH
