@@ -66,8 +66,5 @@ def download(package_name: str) -> Response:
         dynamodb_client.update_item(package)
 
     response: Response = redirect(package.presigned_url)
-    response.cache_control.max_age = (
-        PRESIGNED_URL_EXPIRES_IN_SEC + package.updated - now
-    )
     response.headers.add_header("x-url-updated", "true" if needs_update else "false")
     return response
