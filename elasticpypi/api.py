@@ -10,7 +10,7 @@ from elasticpypi.s3_client import S3Client
 
 app = Flask(__name__)
 
-PRESIGNED_URL_EXPIRES_IN_SEC = 60 * 60 * 24 * 365
+PRESIGNED_URL_EXPIRES_IN_SEC = 60 * 60 * 6
 
 
 @app.route("/simple/")
@@ -34,6 +34,7 @@ def simple_name(normalized_name: str) -> Response:
         "links.html", packages=packages, normalized_name=normalized_name
     )
 
+
 def url_needs_update(url):
     if not url:
         return True
@@ -41,13 +42,12 @@ def url_needs_update(url):
     try:
         response = requests.get(url)
     except Exception:
-        return True 
+        return True
 
     if not response.ok:
         return True
 
     return False
-    
 
 
 @app.route("/simple/download/<package_name>")
@@ -62,10 +62,12 @@ def download(package_name: str) -> Response:
         package.presigned_url = s3_client.get_presigned_download_url(
             package_name, expires_in=PRESIGNED_URL_EXPIRES_IN_SEC + 60
         )
-        package.presigned_url_expires = now + PRESIGNED_URL_EXPIRES_IN_SEC
+        package.updated = now
         dynamodb_client.update_item(package)
 
     response: Response = redirect(package.presigned_url)
-    response.cache_control.max_age = PRESIGNED_URL_EXPIRES_IN_SEC
-    response.headers.add_header('x-url-updated', str(needs_update))
+    response.cache_control.max_age = (
+        PRESIGNED_URL_EXPIRES_IN_SEC + package.updated - now
+    )
+    response.headers.add_header("x-url-updated", "true" if needs_update else "false")
     return response

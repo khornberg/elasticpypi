@@ -119,7 +119,7 @@ resources:
             AttributeType: S
           - AttributeName: "presigned_url"
             AttributeType: S
-          - AttributeName: "presigned_url_expires"
+          - AttributeName: "updated"
             AttributeType: N
         KeySchema:
           - AttributeName: "package_name"

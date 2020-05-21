@@ -30,7 +30,7 @@ def s3(event, _context):
         version=normalize_version(package_name),
         sha256=s3_client.get_sha256(package_name),
         presigned_url="",
-        presigned_url_expires=0,
+        updated=0,
     )
     dynamodb_client.put_item(package)
     return None
