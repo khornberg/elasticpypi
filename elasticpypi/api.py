@@ -67,4 +67,5 @@ def download(package_name: str) -> Response:
 
     response: Response = redirect(package.presigned_url)
     response.cache_control.max_age = PRESIGNED_URL_EXPIRES_IN_SEC
+    response.headers.add_header('x-url-updated', str(needs_update))
     return response
