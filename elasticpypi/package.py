@@ -8,4 +8,4 @@ class Package:
     version: str
     sha256: str
     presigned_url: str
-    updated: int
+    presigned_url_expires: int

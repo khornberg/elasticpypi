@@ -43,7 +43,7 @@ class DynamoDBClient:
                 version=package_data["version"],
                 sha256=package_data.get("sha256", ""),
                 presigned_url="",
-                updated=0,
+                presigned_url_expires=0,
             )
             packages.append(package)
         packages.sort(key=lambda k: k.name)
@@ -65,7 +65,7 @@ class DynamoDBClient:
             "normalized_name": package.normalized_name,
             "sha256": package.sha256,
             "presigned_url": package.presigned_url,
-            "updated": package.updated,
+            "presigned_url_expires": package.presigned_url_expires,
         }
         self.table.put_item(Item=data)
         return data
@@ -73,10 +73,10 @@ class DynamoDBClient:
     def update_item(self, package: Package) -> None:
         self.table.update_item(
             Key={"package_name": package.name, "version": package.version},
-            UpdateExpression="set presigned_url = :presigned_url, updated = :updated",
+            UpdateExpression="set presigned_url = :url, presigned_url_expires = :expires",
             ExpressionAttributeValues={
-                ":presigned_url": package.presigned_url,
-                ":updated": package.updated,
+                ":url": package.presigned_url,
+                ":expires": package.presigned_url_expires,
             },
         )
 
@@ -109,5 +109,5 @@ class DynamoDBClient:
             version=package_data["version"],
             sha256=package_data.get("sha256", ""),
             presigned_url=package_data.get("presigned_url", ""),
-            updated=int(package_data.get("updated", 0)),
+            presigned_url_expires=int(package_data.get("presigned_url_expires", 0)),
         )
