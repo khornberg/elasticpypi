@@ -2,3 +2,4 @@ basicauth==0.4.1
 boto3
 flask==1.1.1
 packaging==20.4
+requests

@@ -1,6 +1,7 @@
 import os
 import time
 
+import requests
 from flask import Flask, Response, abort, redirect, render_template
 
 from elasticpypi.dynamodb_client import DynamoDBClient
@@ -33,6 +34,21 @@ def simple_name(normalized_name: str) -> Response:
         "links.html", packages=packages, normalized_name=normalized_name
     )
 
+def url_needs_update(url):
+    if not url:
+        return True
+
+    try:
+        response = requests.get(url)
+    except Exception:
+        return True 
+
+    if not response.ok:
+        return True
+
+    return False
+    
+
 
 @app.route("/simple/download/<package_name>")
 def download(package_name: str) -> Response:
@@ -40,10 +56,8 @@ def download(package_name: str) -> Response:
     env_namespace = EnvNamespace(os.environ)
     dynamodb_client = DynamoDBClient(env_namespace.table)
     package = dynamodb_client.get_item(package_name)
-    if (
-        not package.presigned_url
-        or package.presigned_url_expires < now
-    ):
+    needs_update = url_needs_update(package.presigned_url)
+    if needs_update:
         s3_client = S3Client(env_namespace.bucket)
         package.presigned_url = s3_client.get_presigned_download_url(
             package_name, expires_in=PRESIGNED_URL_EXPIRES_IN_SEC + 60
