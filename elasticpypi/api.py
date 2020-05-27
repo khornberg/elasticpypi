@@ -11,6 +11,7 @@ from elasticpypi.s3_client import S3Client
 app = Flask(__name__)
 
 PRESIGNED_URL_EXPIRES_IN_SEC = 60 * 60 * 6
+MAX_CONTENT_LENGTH = 1024 * 1024 * 8
 
 
 @app.route("/simple/")
@@ -54,11 +55,32 @@ def url_needs_update(url):
 def download(package_name: str) -> Response:
     now = int(time.time())
     env_namespace = EnvNamespace(os.environ)
+    s3_client = S3Client(env_namespace.bucket)
+    try:
+        s3_object = s3_client.get_object(package_name)
+    except s3_client.client.exceptions.ClientError:
+        abort(404)
+
+    content_length = s3_object["ContentLength"]
+    if content_length < MAX_CONTENT_LENGTH:
+        content_type = s3_object["ContentType"]
+        last_modified = s3_object["LastModified"]
+        etag = s3_object["ETag"]
+        response = Response(s3_object["Body"], mimetype="application/zip")
+        response.content_length = content_length
+        response.content_type = content_type
+        response.last_modified = last_modified
+        response.cache_control.max_age = 60 * 60 * 365
+        response.accept_ranges = "bytes"
+        response.headers.add_header("x-url-updated", "stream")
+        response.headers.add_header("ETag", etag.replace('"', ""))
+        return response
+
     dynamodb_client = DynamoDBClient(env_namespace.table)
     package = dynamodb_client.get_item(package_name)
-    needs_update = url_needs_update(package.presigned_url)
+    # needs_update = package.updated - int(time.time()) + PRESIGNED_URL_EXPIRES_IN_SEC < 0
+    needs_update = True
     if needs_update:
-        s3_client = S3Client(env_namespace.bucket)
         package.presigned_url = s3_client.get_presigned_download_url(
             package_name, expires_in=PRESIGNED_URL_EXPIRES_IN_SEC + 60
         )
