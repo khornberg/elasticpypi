@@ -33,6 +33,7 @@ package:
 functions:
   api:
     handler: wsgi_handler.handler
+    timeout: 30
     events:
       - http:
           path: simple
@@ -72,6 +73,7 @@ functions:
             type: request
   s3:
     handler: elasticpypi.handler.s3
+    timeout: 30
     events:
       - s3:
           bucket: ${self:provider.environment.BUCKET}
@@ -81,6 +83,7 @@ functions:
           event: s3:ObjectCreated:*
   authorizer:
     handler: elasticpypi.handler.auth
+    timeout: 30
 
 custom:
   wsgi:
