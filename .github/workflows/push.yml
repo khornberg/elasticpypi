@@ -14,9 +14,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Curl
+      if: ${{ matrix.python-version == '3.6' }}
       run: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - name: Prepare
+      if: ${{ matrix.python-version == '3.6' }}
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
@@ -30,8 +32,9 @@ jobs:
         python -m pytest --cov=elasticpypi --cov-report=term-missing --cov-report=xml
     - name: Lint
       run: |
-        flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv
+        flake8 -v
     - name: Report
+      if: ${{ matrix.python-version == '3.6' }}
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
