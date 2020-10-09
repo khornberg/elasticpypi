@@ -67,7 +67,7 @@ def make_table(items=None):
                 'AttributeType': 'S'
             },
             {
-                'AttributeName': 'filename',
+                'AttributeName': 'normalized_name',
                 'AttributeType': 'S'
             },
         ],
