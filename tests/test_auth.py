@@ -1,5 +1,5 @@
 from unittest import TestCase
-from tests.fixtures import typicalRequest
+from tests.fixtures import typical_request
 from elasticpypi.handler import auth
 
 
@@ -14,14 +14,15 @@ class AuthTests(TestCase):
                     {
                         'Action': 'execute-api:Invoke',
                         'Effect': 'Allow',
-                        'Resource': ['arn:aws:execute-api:us-artic-1:1234567890:lttrsNmbrs/packages/*/*']
+                        'Resource': ['arn:aws:execute-api:us-artic-1:1234567890:*/packages/*/*']
                     }
                 ]
             }
         }
-        policyDocument = auth(typicalRequest(), {})
-        self.assertEqual(policyDocument, expected)
+        policy_document = auth(typical_request(), {})
+        self.maxDiff = None
+        self.assertEqual(policy_document, expected)
 
     def test_auth_raises_401_when_comparison_fails(self):
         with self.assertRaises(Exception):
-            auth(typicalRequest(password='notCorrect'), {})
+            auth(typical_request(password='notCorrect'), {})

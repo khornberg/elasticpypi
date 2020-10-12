@@ -4,19 +4,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 2
+      max-parallel: 3
       matrix:
-        python-version: [3.6, 3.7]
+        python-version: [3.6, 3.7, 3.8]
     steps:
-    - uses: actions/checkout@master
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        version: ${{ matrix.python-version }}
+        python-version: ${{ matrix.python-version }}
     - name: Curl
+      if: ${{ matrix.python-version == '3.6' }}
       run: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
     - name: Prepare
+      if: ${{ matrix.python-version == '3.6' }}
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |
@@ -30,8 +32,9 @@ jobs:
         python -m pytest --cov=elasticpypi --cov-report=term-missing --cov-report=xml
     - name: Lint
       run: |
-        flake8 --max-complexity=6 --max-line-length=120 --exclude node_modules,.requirements,venv
+        flake8 -v
     - name: Report
+      if: ${{ matrix.python-version == '3.6' }}
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       run: |

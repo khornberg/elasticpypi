@@ -128,7 +128,7 @@ delete_event = {
 }
 
 
-def typicalRequest(password=None):
+def typical_request(password=None):
     authorization = encode(config['username'], password if password else config['password'])
     return {
         "resource": "/",
