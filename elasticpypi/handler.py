@@ -24,7 +24,15 @@ def s3(event, context):
 
 def auth(event, context):
     user, pwd = decode(event['headers']['Authorization'])
-    if user != config['username'] or pwd != config['password']:
+    if config.get('username') and config.get('password'):
+        users = {config.get('username'): config.get('password')}
+    if config.get('users'):
+        pairs = config.get('users').split(',')
+        users = {}
+        for pair in pairs:
+            username, password = pair.split(":")
+            users[username] = password
+    if not users.get(user) or users.get(user) != pwd:
         raise Exception('Unauthorized')
     principal_id = user
     tmp = event['methodArn'].split(':')

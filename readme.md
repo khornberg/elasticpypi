@@ -47,8 +47,13 @@ provider:
     TABLE: "elasticpypi"              # You can change me if you want, but do you?
     USERNAME: "elasticpypi"           # You can change me if you want, but do you?
     PASSWORD: "something-secretive"   # CHANGE ME
+    USERS: "my:blah,your:secret"      # OPTIONAL, default not present
     OVERWRITE: false                  # Allow uploads to overwrite already existing packages
 ```
+
+#### Users
+
+`USERS` may be a comma delimited string of `username:password`. If present it will be used instead of `USERNAME` and `PASSWORD`
 
 # Deploy
 
@@ -93,6 +98,8 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         elasticpypi-test
 
 # Changelog
+* 2020-10-12 Multiple users
+
 * 2018-11-26 HTTP Basic Authentication works for in browser browsing
 
 * 2018-01-04 Downloads up to 10 MB work without signed requests

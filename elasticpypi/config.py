@@ -5,10 +5,13 @@ WATCHED = [
     'STAGE',
     'BUCKET',
     'TABLE',
-    'USERNAME',
-    'PASSWORD',
-    'OVERWRITE'
+    'OVERWRITE',
+    'USERS',
 ]
 
 # load config
-config = {k.lower(): v for k, v in os.environ.items() if k in WATCHED}
+_config = {k.lower(): v for k, v in os.environ.items() if k in WATCHED}
+if not _config.get('users'):
+    _config['username'] = os.environ.get('USERNAME')
+    _config['password'] = os.environ.get('PASSWORD')
+config = _config
