@@ -128,8 +128,8 @@ delete_event = {
 }
 
 
-def typical_request(password=None):
-    authorization = encode(config['username'], password if password else config['password'])
+def typical_request(user='elasticpypi', password='something-secretive'):
+    authorization = encode(user, password)
     return {
         "resource": "/",
         "path": "/",
