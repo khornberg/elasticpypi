@@ -1,5 +1,4 @@
 from basicauth import encode
-from elasticpypi.config import config
 
 simple_html = '<html>\n  <head>\n    <title>Simple Index</title>\n  </head>\n  <body>\n    \n    <a href="/dev/simple/x/">x</a><br/>\n    \n    <a href="/dev/simple/y/">y</a><br/>\n    \n    <a href="/dev/simple/z/">z</a><br/>\n    \n  </body>\n</html>'  # noqa [E501]
 
