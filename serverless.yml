@@ -241,6 +241,7 @@ resources:
               method.response.header.TimeStamp: true
               method.response.header.Content-Length: true
               method.response.header.Content-Type: true
+              method.response.header.Cache-Control: true
         RequestParameters:
           method.request.path.name: true
         Integration:
@@ -258,5 +259,6 @@ resources:
                 method.response.header.TimeStamp: integration.response.header.Date
                 method.response.header.Content-Length: integration.response.header.Content-Length
                 method.response.header.Content-Type: integration.response.header.Content-Type
+                method.response.header.Cache-Control: "'public, max-age=31536000'"
           RequestParameters:
             integration.request.path.key: method.request.path.name
