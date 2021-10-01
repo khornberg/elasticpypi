@@ -3,7 +3,7 @@
     "serverless": "1.83.3",
     "serverless-apigw-binary": "0.4.4",
     "serverless-python-requirements": "5.1.1",
-    "serverless-wsgi": "1.7.8"
+    "serverless-wsgi": "2.0.2"
   },
   "name": "elasticpypi",
   "description": "elastic pypi",
