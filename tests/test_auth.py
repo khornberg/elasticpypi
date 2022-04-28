@@ -49,3 +49,24 @@ def test_get_username_and_password_form_environment():
 def test_auth_raises_401_when_comparison_fails():
     with pytest.raises(Exception):
         auth(typical_request(password='notCorrect'), {})
+
+
+def test_authorization_header_can_be_mixed_case():
+    expected = {
+        'principalId': 'elasticpypi',
+        'policyDocument': {
+            'Version': '2012-10-17',
+            'Statement': [
+                {
+                    'Action': 'execute-api:Invoke',
+                    'Effect': 'Allow',
+                    'Resource': ['arn:aws:execute-api:us-artic-1:1234567890:*/packages/*/*']
+                }
+            ]
+        }
+    }
+    request_event = typical_request()
+    request_event['headers']['authorization'] = request_event['headers']['Authorization']
+    del request_event['headers']['Authorization']
+    policy_document = auth(request_event, {})
+    assert policy_document == expected

@@ -24,11 +24,8 @@ def s3(event, context):
 
 def auth(event, context):
     authorization_header = {k.lower(): v for k, v in event['headers'].items() if k.lower() == 'authorization'}
-    #log.debug("authorization: " + json.dumps(authorization_header))
-
     # Get the username:password hash from the authorization header
     username_password_hash = authorization_header['authorization'].split()[1]
-
     user, pwd = decode(username_password_hash)
     if config.get('username') and config.get('password'):
         users = {config.get('username'): config.get('password')}
