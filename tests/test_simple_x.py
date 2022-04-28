@@ -2,7 +2,7 @@ from flask_testing import TestCase
 from elasticpypi.api import app
 from elasticpypi.config import config
 from tests import fixtures
-from moto import mock_dynamodb2
+from moto import mock_dynamodb
 from tests import mock_dynamodb_table
 
 TABLE = config['table']
@@ -14,7 +14,7 @@ class ElasticPypiTests(TestCase):
         app.config['TESTING'] = True
         return app
 
-    @mock_dynamodb2
+    @mock_dynamodb
     def test_get_simple_x_200_from_dynamodb(self):
         mock_dynamodb_table.make_table([
             {
@@ -43,7 +43,7 @@ class ElasticPypiTests(TestCase):
         self.assert200(response)
         self.assertEqual(response.data.decode(), fixtures.links_html)
 
-    @mock_dynamodb2
+    @mock_dynamodb
     def test_get_wheel(self):
         mock_dynamodb_table.make_table([
             {

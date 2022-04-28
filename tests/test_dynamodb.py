@@ -2,12 +2,12 @@ from unittest import TestCase
 from elasticpypi.dynamodb import list_packages_by_name
 from elasticpypi.handler import s3
 from tests.fixtures import delete_event, put_event, put_event_for_wheel
-from moto import mock_dynamodb2
+from moto import mock_dynamodb
 from tests import mock_dynamodb_table
 import boto3
 
 
-@mock_dynamodb2
+@mock_dynamodb
 class ElasticPypiDynamodbTests(TestCase):
 
     def setUp(self):
