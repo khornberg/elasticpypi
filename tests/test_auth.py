@@ -3,8 +3,6 @@ from tests.fixtures import typical_request
 from elasticpypi.handler import auth
 
 
-
-
 def test_authorization_header_can_be_mixed_case():
     expected = {
         'principalId': 'elasticpypi',
