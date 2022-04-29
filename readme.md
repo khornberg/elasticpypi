@@ -34,7 +34,7 @@ service: elasticpypi
 
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.9
   memorySize: 128
   stage: dev
   # profile: "some-local-aws-config-profile"
@@ -98,6 +98,8 @@ The example below runs the full test suite. To debug, add `/bin/bash` to the end
         elasticpypi-test
 
 # Changelog
+* 2022-04-29 Support any cased Authorization header; drop python 3.6 support; updates to a bunch of dependencies
+
 * 2021-03-08 Add Cache-Control header so `pip` caches the package
 
 * 2020-10-12 Multiple users
