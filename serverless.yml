@@ -6,7 +6,7 @@ provider:
   memorySize: 128
   stage: dev
   # profile: 'some-local-aws-config-profile'
-  # region: us-east-1
+  region: us-east-1
 
   environment:
     SERVICE: ${self:service}

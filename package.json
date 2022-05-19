@@ -1,13 +1,13 @@
 {
   "devDependencies": {
-    "serverless": "1.83.3",
+    "serverless": "3.17.0",
     "serverless-apigw-binary": "0.4.4",
     "serverless-python-requirements": "5.4.0",
-    "serverless-wsgi": "1.7.8"
+    "serverless-wsgi": "3.0.0"
   },
   "name": "elasticpypi",
   "description": "elastic pypi",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "main": "index.js",
   "directories": {
     "test": "tests"
