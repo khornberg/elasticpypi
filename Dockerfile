@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.11
 MAINTAINER Shaun Martin <shaun@samsite.ca>
 
 VOLUME /code
