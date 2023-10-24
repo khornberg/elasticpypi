@@ -18,7 +18,7 @@ Only uploads through the API are checked for and discriminated by the `overwrite
 
 **Downloads are limited to 10MB**
 
-This again is a limitation of AWS; specifically API Gateway.
+This again is a limitation of AWS, specifically API Gateway.
 https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#api-gateway-limits
 
 # Setup
