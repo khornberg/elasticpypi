@@ -1,6 +1,6 @@
 Flask-Testing==0.8.1
 pytest==7.4.4
-moto==3.1.19
+moto==4.2.14
 boto==2.49.0
 boto3==1.33.8
 pytest-env==0.8.2
