@@ -15,6 +15,9 @@ wheel_file_re = re.compile(
     re.VERBOSE,
 )
 
+_normalize_re = re.compile(r"[-_.]+")
+
+
 
 def _compute_package_name_wheel(basename):
     m = wheel_file_re.match(basename)
@@ -54,4 +57,4 @@ def compute_version(path):
 
 def normalize(name):
     # From https://www.python.org/dev/peps/pep-0503/
-    return re.sub(r"[-_.]+", "-", name).lower()
+    return _normalize_re.sub("-", name).lower()
